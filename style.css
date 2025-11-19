@@ -94,9 +94,65 @@ aside {
 .section-ajouter-employe .container {
   width: 550px;
   height: calc(100vh - 100px);
-  position: relative;
   background: white;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.section-ajouter-employe .container .erorr {
+  display: none;
+  height: 70px;
+  border-radius: 5px;
+  border: 1px solid red;
+  z-index: 12;
+  padding: 2px;
+  position: absolute;
+  top: -40px;
+  right: 20%;
+  left: 20%;
+  color: white;
+}
+.section-ajouter-employe .container .erorr .erorr-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+}
+.section-ajouter-employe .container .erorr .erorr-content p {
+  margin: 0;
+  padding: 0;
+}
+.section-ajouter-employe .container .valid {
+  display: none;
+  height: 70px;
+  border-radius: 5px;
+  border: 1px solid #04f604;
+  z-index: 12;
+  padding: 2px;
+  position: absolute;
+  top: -40px;
+  right: 20%;
+  left: 20%;
+  color: white;
+}
+.section-ajouter-employe .container .valid .valid-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  background-color: #04f604;
+}
+.section-ajouter-employe .container .valid .valid-content p {
+  margin: 0;
+  padding: 0;
+}
+.section-ajouter-employe .container .header-info {
   display: flex;
   flex-direction: column;
   align-items: center;

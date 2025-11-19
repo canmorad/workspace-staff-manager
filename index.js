@@ -1,4 +1,53 @@
 
+let validationRules = {
+    'nom-complet': {
+        regex: /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/,
+        errorMessage: "Nom invalide. Doit contenir au moins 3 caractères (lettres, espaces, tirets, apostrophes uniquement).",
+        validMessage: "Nom complet valide."
+    },
+    email: {
+        regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        errorMessage: "Email invalide. Format attendu : exemple@domaine.com.",
+        validMessage: "Email valide."
+    },
+    telephone: {
+        regex: /^(\+?\d{1,3}[- ]?)?(\d{9,15})$/,
+        errorMessage: "Téléphone invalide. Doit contenir entre 9 et 15 chiffres avec ou sans indicatif pays.",
+        validMessage: "Numéro de téléphone valide."
+    },
+    'photo-url': {
+        regex: /^(http|https):\/\/[^ "']*\.(?:png|jpg|jpeg|gif|svg)$/i,
+        errorMessage: "URL de photo invalide. Doit être un lien complet se terminant par une extension d'image (png, jpg, jpeg, gif, svg).",
+        validMessage: "URL de photo valide."
+    },
+    // role: {
+    //     regex: /^.{1,}$/,
+    //     errorMessage: "Veuillez sélectionner un rôle.",
+    //     validMessage: "Rôle principal sélectionné."
+    // },
+    'span-entreprise': {
+        regex: /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s'&,.-]{3,}$/,
+        errorMessage: "Nom de l'entreprise invalide. Doit contenir au moins 3 caractères.",
+        validMessage: "Nom de l'entreprise valide."
+    },
+    'role-experience': {
+        regex: /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/,
+        errorMessage: "Rôle de l'expérience invalide. Doit contenir au moins 3 caractères.",
+        validMessage: "Rôle de l'expérience valide."
+    },
+    'form-date': {
+        regex: /^[\d]{4}-[\d]{2}-[\d]{2}$/,
+        errorMessage: "La date de début doit être antérieure à la date de fin.",
+        validMessage: "Date 'Du' valide."
+    },
+    'to-date': {
+        regex: /^[\d]{4}-[\d]{2}-[\d]{2}$/,
+        errorMessage: "La date de fin doit être postérieure à la date de début.",
+        validMessage: "Date 'Au' valide."
+    }
+};
+
+
 function renderZones() {
     // const zones = document.getElementById('zones');
     const rectZones = zones.getBoundingClientRect();
@@ -124,22 +173,26 @@ function ajouterBlockExperince() {
                 <div class="box-input">
                     <div class="content-box">
                         <label for="entreprise">Entreprise :</label>
-                        <input type="text" class="entreprise">
+                        <input type="text" class="entreprise" name="span-entreprise">
+                        <span class="span-entreprise"></span>
                     </div>
 
                     <div class="content-box">
                         <label for="role">Role :</label>
-                        <input type="text" class="role">
+                        <input type="text" class="role" name="role-experience">
+                        <span class="role-experience"></span>
                     </div>
 
                     <div class="content-box">
                         <label for="form">Du :</label>
-                        <input type="date" class="form">
+                        <input type="date" class="form" name="form-date">
+                        <span class="form-date"></span>
                     </div>
 
                     <div class="content-box">
                         <label for="to">Au :</label>
-                        <input type="date" class="to">
+                        <input type="date" class="to" name="to-date">
+                        <span class="to-date"></span>
                     </div>
                  </div>
         `;
@@ -151,9 +204,92 @@ function ajouterBlockExperince() {
             })
         }, 200);
 
+        nouveauBlock.querySelectorAll('input').forEach((input) => {
+            if (input.type === 'date') return;
+
+            input.addEventListener('input', () => {
+                let value = input.value.trim();
+                let regex = validationRules[input.name].regex;
+                let errorSpan = nouveauBlock.querySelector('.' + input.name);
+                console.log(errorSpan);
+                errorSpan.innerHTML = "";
+
+                if (value.length > 0) {
+                    if (!value.match(regex)) {
+                        input.style.border = "3px solid red";
+                        errorSpan.innerText = validationRules[input.name].errorMessage;
+                        errorSpan.style.color = 'red'
+                    }
+                    else {
+                        input.style.border = "3px solid green";
+                        errorSpan.innerText = validationRules[input.name].validMessage;
+                        errorSpan.style.color = 'green';
+
+                        setTimeout(() => {
+                            errorSpan.innerText = "";
+                        }, 3000);
+                    }
+                } else {
+                    errorSpan.innerText = "";
+                }
+
+            });
+
+        });
+
+        let validationDate = function () {
+            let dateDebut = nouveauBlock.querySelector('.form');
+            let dateFin = nouveauBlock.querySelector('.to');
+            let errorSpanForm = nouveauBlock.querySelector('.' + dateDebut.name);
+            let errorSpanTo = nouveauBlock.querySelector('.' + dateFin.name);
+
+            dateDebut.style.border = "";
+            errorSpanForm.innerText = "";
+            errorSpanForm.style.color = "";
+
+            if (dateFin.value && dateDebut.value) {
+                const debut = new Date(dateDebut.value);
+                const fin = new Date(dateFin.value);
+
+                if (debut > fin) {
+                    dateDebut.style.border = "3px solid red";
+                    dateFin.style.border = "3px solid red";
+
+                    errorSpanForm.innerText = validationRules[dateDebut.name].errorMessage;
+                    errorSpanTo.innerText = validationRules[dateFin.name].errorMessage;
+
+                    errorSpanForm.style.color = 'red';
+                    errorSpanTo.style.color = 'red';
+
+                    setTimeout(() => {
+                        errorSpanForm.innerText = "";
+                        errorSpanTo.innerText = "";
+                    }, 3000);
+
+                } else {
+                    dateDebut.style.border = "3px solid green";
+                    dateFin.style.border = "3px solid green";
+
+                    errorSpanForm.innerText = validationRules[dateDebut.name].validMessage;
+                    errorSpanTo.innerText = validationRules[dateFin.name].validMessage;
+
+                    errorSpanForm.style.color = 'green';
+                    errorSpanTo.style.color = 'green';
+
+                    setTimeout(() => {
+                        errorSpanForm.innerText = "";
+                        errorSpanTo.innerText = "";
+                    }, 3000);
+                }
+            }
+        }
+
+        nouveauBlock.querySelector('.form').addEventListener('input', validationDate);
+        nouveauBlock.querySelector('.to').addEventListener('input', validationDate);
+
         experieces.appendChild(nouveauBlock);
 
-    })
+    });
 
 }
 
@@ -167,17 +303,102 @@ function closeModaleEmploye() {
     document.getElementById('div-blur').classList.remove('blur-active');
 }
 
-ajouterBlockExperince();
-renderPhoto();
-renderZones();
+function saveEmployeData() {
+
+    const nomCompletInput = document.getElementById('nom-complet').value.trim();
+    const roleInput = document.getElementById('role').value.trim();
+    const emailInput = document.getElementById('email').value.trim();
+    const telephoneInput = document.getElementById('telephone').value.trim();
+    const photoURLInput = document.getElementById('photo-url').value.trim();
+    const experieces = document.getElementById('experieces');
+    const employeData = getEmployeData();
+    let experiecesTAB = [];
+
+    experieces.querySelectorAll('.box-input').forEach((experiece) => {
+        const entrepriseInput = experiece.querySelector('.entreprise').value.trim();
+        const roleInput = experiece.querySelector('.role').value.trim();
+        const formInput = experiece.querySelector('.form').value.trim();
+        const toInput = experiece.querySelector('.to').value.trim();
+
+        experiecesTAB.push(
+            {
+                entreprise: entrepriseInput,
+                role: roleInput,
+                form: formInput,
+                to: toInput
+            }
+        );
+    });
+
+    employeData.push({
+        nom: nomCompletInput,
+        role: roleInput,
+        email: emailInput,
+        telephone: telephoneInput,
+        photoUR: photoURLInput,
+        experieces: experiecesTAB
+    });
+
+    localStorage.setItem('employes', JSON.stringify(employeData));
+
+    setTimeout(() => {
+        document.querySelector('.valid').style.display = 'none';
+    }, 3000);
+
+    setTimeout(() => {
+        closeModaleEmploye();
+    }, 5000);
+}
+
+function getEmployeData() {
+    if (!localStorage.getItem('employes')) {
+        return [];
+    }
+    return JSON.parse(localStorage.getItem('employes'));
+}
+
+function validationForm() {
+    const formInfoEmploye = document.getElementById('form-info-employe');
+    let isvalide = true;
+    formInfoEmploye.querySelectorAll('input').forEach((input) => {
+
+        if (input.style.borderColor === 'red' || !validationInput(input)) {
+            isvalide = false;
+        }
+
+        // validationInput(input);
+    });
+
+    return isvalide;
+
+}
+
+function validationInput(input) {
+    let value = input.value.trim();
+    if (!value) {
+        let errorSpan = document.querySelector('.' + input.name);
+
+        errorSpan.innerHTML = "";
+
+        input.style.border = "3px solid red";
+        errorSpan.innerText = "Ce champ est obligatoire.";
+        errorSpan.style.color = 'red'
+
+        setTimeout(() => {
+            errorSpan.innerText = "";
+        }, 3000);
+
+        return false
+    }
+    return true;
+}
 
 function initApp() {
     const ajouterEmployeBtn = document.getElementById('ajouter-employe-btn');
     const removeModaleBtn = document.getElementById('remove-modale-add-employe-btn');
     const rechercherEmploye = document.getElementById('rechercher-employe');
-    const sauvegarderEmployeBtn = document.getElementById('sauvegarder-employe-btn');
     const formInfoEmploye = document.getElementById('form-info-employe');
-    
+
 
     ajouterEmployeBtn.addEventListener('click', openModaleEmploye);
 
@@ -190,7 +411,58 @@ function initApp() {
             document.getElementById('icon-search').style.display = 'block';
     });
 
-    
+    formInfoEmploye.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        if (!validationForm()) {
+            document.querySelector('.erorr').style.display = 'block';
+
+            setTimeout(() => {
+                document.querySelector('.erorr').style.display = 'none';
+            }, 3000);
+        } else {
+            document.querySelector('.valid').style.display = 'block';
+            saveEmployeData();
+        }
+    });
+
+    formInfoEmploye.querySelectorAll('input').forEach((input) => {
+        input.addEventListener('input', () => {
+            let value = input.value.trim();
+            let regex = validationRules[input.name].regex;
+            let errorSpan = document.getElementsByClassName(input.name)[0];
+
+            errorSpan.innerHTML = "";
+
+            if (value.length > 0) {
+                if (!value.match(regex)) {
+                    input.style.border = "3px solid red";
+                    errorSpan.innerText = validationRules[input.name].errorMessage;
+                    errorSpan.style.color = 'red'
+
+                    setTimeout(() => {
+                        errorSpan.innerText = "";
+                    }, 3000);
+                }
+                else {
+                    input.style.border = "3px solid green";
+                    errorSpan.innerText = validationRules[input.name].validMessage;
+                    errorSpan.style.color = 'green';
+                    setTimeout(() => {
+                        errorSpan.innerText = "";
+                    }, 3000);
+                }
+            } else {
+                errorSpan.innerText = "";
+            }
+
+        })
+    });
+
+    ajouterBlockExperince();
+    renderPhoto();
+    renderZones();
+
 }
 
 initApp();
