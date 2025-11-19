@@ -74,8 +74,15 @@ aside {
         border: none;
         padding: 10px;
         margin-top: 10px;
-        margin-bottom: 10px
+        margin-bottom: 10px;
+
+        &:hover {
+            transform: translateY(-3px);
+            background-color: #ddd8d8;
+            background: rgb(43, 152, 59);
+        }
     }
+
 }
 
 .zones {
@@ -95,7 +102,8 @@ aside {
 }
 
 .section-ajouter-employe {
-    display: flex;
+    display: none;
+    z-index: 11;
     justify-content: center;
     align-items: center;
     width: 100vw;
@@ -107,7 +115,7 @@ aside {
     .container {
         width: 550px;
         height: calc(100vh - 100px);
-        // padding: 10px;
+        position: relative;
         background: white;
         border-radius: 10px;
         display: flex;
@@ -155,7 +163,7 @@ aside {
             padding: 20px;
             font-family: serif, 'Kranky';
 
-            h2{
+            h2 {
                 margin-top: -4px;
             }
 
@@ -169,7 +177,8 @@ aside {
                     flex-direction: column;
                     row-gap: 10px;
 
-                    input ,select{
+                    input,
+                    select {
                         padding: 10px;
                         border-radius: 5px;
                         border: 1px solid #bcbaba;
@@ -178,18 +187,151 @@ aside {
                 }
             }
 
-            .content-photo{
-                display: flex;
+            .content-photo {
+                display: none;
+                // display: flex;
                 justify-content: center;
                 align-items: center;
-                width: 72px;
-                height: 72px;
+                width: 70px;
+                height: 70px;
                 border-radius: 50%;
-                background: #004526;
                 margin-top: 10px;
                 margin-left: 10px;
             }
+
+            hr {
+                margin-top: 30px;
+                margin-bottom: 30px;
+                width: 100%;
+                height: 1px;
+                background: #bcbaba;
+            }
+
+            .ajouter-experience-btn {
+                display: flex;
+                column-gap: 10px;
+                color: #a5a3a3;
+                font-size: 16px;
+                // width: 200px;
+                border-radius: 10px;
+                border: 1px solid #bcbaba;
+                padding: 10px;
+                margin-top: 8px;
+                margin-bottom: 10px
+            }
+
+            .ajouter-experience-btn:hover {
+                transform: translateY(-3px);
+                background-color: #ddd8d8;
+            }
+
+            i {
+                color: #a5a3a3;
+                font-size: 20px;
+            }
+
+            .experieces {
+                display: flex;
+                flex-direction: column;
+                row-gap: 10px;
+
+                .experiece-item {
+                    background: rgb(237, 231, 231);
+                    border-radius: 10px;
+                    padding: 20px 10px 30px 10px;
+                    position: relative;
+
+                    .remove-experience-btn {
+                        border: none;
+
+                        i {
+                            position: absolute;
+                            color: #bcbaba;
+                            right: 10px;
+                            top: 10px;
+                            font-size: 16px;
+
+                            &:hover {
+                                color: red;
+                            }
+                        }
+
+                    }
+
+                    p {
+                        font-family: 'Kranky', serif;
+                        font-size: 20px;
+                        font-weight: bold;
+                    }
+                }
+            }
+
+        }
+
+        .footer-btn {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            // height: 50px;
+            padding: 10px;
+
+            .sauvegarder-employe-btn {
+                color: white;
+                font-size: 16px;
+                background: blue;
+                border-radius: 8px;
+                border: none;
+                padding: 10px 20px 10px 20px;
+
+                &:hover {
+                    transform: translateY(-3px);
+                    background-color: #ddd8d8;
+                    background: rgb(43, 152, 59);
+                }
+            }
+
+            .remove-modale-ajouter-employe-btn {
+                font-size: 16px;
+                color: #a5a3a3;
+                border: 1px solid #bcbaba;
+                border-radius: 8px;
+                padding: 10px 20px 10px 20px;
+
+                &:hover {
+                    transform: translateY(-3px);
+                    background-color: #ddd8d8;
+                }
+            }
+        }
+
+        .remove-modale-add-employe-btn {
+            border: none;
+
+            i {
+                position: absolute;
+                color: #bcbaba;
+                right: 15px;
+                top: 15px;
+                font-size: 16px;
+
+                &:hover {
+                    color: red;
+                }
+            }
+
         }
 
     }
+}
+
+.blur-active{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+    transition: filter 0.3s ease-out;
 }
