@@ -17,6 +17,7 @@
     <aside>
 
     </aside>
+
     <section class="unassigned-staff">
         <div class="container">
             <h3>Employés non affectés</h3>
@@ -28,7 +29,7 @@
 
         </div>
 
-        <button class="ajouter-employe">Ajout d'un employé</button>
+        <button class="ajouter-employe" id="ajouter-employe-btn">Ajout d'un employé</button>
 
     </section>
 
@@ -43,6 +44,95 @@
 
     </section>
 
+    <section class="section-ajouter-employe" id="section-ajouter-employe">
+        <div class="container">
+
+            <button class="remove-modale-add-employe-btn" id="remove-modale-add-employe-btn">
+                <i class="fa-solid fa-x"></i>
+            </button>
+
+            <div class="icon-user">
+                <div class="circle-grand">
+                    <div class="circle-petit">
+                        <img src="images/user.svg" alt="" width="30px" height="30px">
+                    </div>
+                </div>
+            </div>
+            <h3>Ajout d'un employé</h3>
+            <p>Veuillez compléter le formulaire ci-dessous pour ajouter un nouvel employé.</p>
+
+            <form action="" id="form-info-employe">
+                <div class="section-info">
+                    <h2>Informations de base</h2>
+
+                    <div class="box-input">
+                        <div class="content-box">
+                            <label for="nom-complet">Nom complet :</label>
+                            <input type="text" id="nom-complet">
+                        </div>
+
+                        <div class="content-box">
+                            <label for="role">Role :</label>
+                            <select name="" id="role">
+                                <option value="IT">IT</option>
+                                <option value="Receptionist">Receptionist</option>
+                                <option value="Securite">Securite</option>
+                                <option value="Cleaning">Cleaning</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="content-box">
+                            <label for="email">Email :</label>
+                            <input type="email" id="email">
+                        </div>
+
+                        <div class="content-box">
+                            <label for="telephone">Téléphone :</label>
+                            <input type="text" id="telephone">
+                        </div>
+
+                        <div class="content-box">
+                            <label for="photo-url">Photo (URL) :</label>
+                            <input type="url" id="photo-url">
+                        </div>
+
+                    </div>
+
+                    <div class="content-photo" id="content-photo">
+                        <svg width="100%" height="100%" id="svg-photo">
+
+                        </svg>
+                    </div>
+
+                    <hr>
+
+                    <h2>Expérience professionnelle</h2>
+
+                    <button class="ajouter-experience-btn" id="ajouter-experience-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Ajouter une Expérience
+                    </button>
+                    <div class="experieces" id="experieces">
+
+                    </div>
+
+                </div>
+
+                <div class="footer-btn">
+                    <button class="remove-modale-ajouter-employe-btn">Annuler</button>
+                    <button type="submit" class="sauvegarder-employe-btn" id="sauvegarder-employe-btn">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- <img src="images/user.svg" alt=""> -->
+
+    </section>
+
+    <div id="div-blur">
+
+    </div>
 
     <script src="index.js"></script>
 </body>

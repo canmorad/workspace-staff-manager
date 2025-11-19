@@ -61,6 +61,11 @@ aside {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+.unassigned-staff .ajouter-employe:hover {
+  transform: translateY(-3px);
+  background-color: #ddd8d8;
+  background: #2b983b;
+}
 .zones {
   margin-left: 380px;
   width: calc(100% - 380px);
@@ -76,7 +81,8 @@ aside {
   border-radius: 10px;
 }
 .section-ajouter-employe {
-  display: flex;
+  display: none;
+  z-index: 11;
   justify-content: center;
   align-items: center;
   width: 100vw;
@@ -88,6 +94,7 @@ aside {
 .section-ajouter-employe .container {
   width: 550px;
   height: calc(100vh - 100px);
+  position: relative;
   background: white;
   border-radius: 10px;
   display: flex;
@@ -151,13 +158,121 @@ aside {
   outline: none;
 }
 .section-ajouter-employe .container .section-info .content-photo {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
-  width: 72px;
-  height: 72px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  background: #004526;
   margin-top: 10px;
   margin-left: 10px;
+}
+.section-ajouter-employe .container .section-info hr {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 100%;
+  height: 1px;
+  background: #bcbaba;
+}
+.section-ajouter-employe .container .section-info .ajouter-experience-btn {
+  display: flex;
+  column-gap: 10px;
+  color: #a5a3a3;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #bcbaba;
+  padding: 10px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+.section-ajouter-employe .container .section-info .ajouter-experience-btn:hover {
+  transform: translateY(-3px);
+  background-color: #ddd8d8;
+}
+.section-ajouter-employe .container .section-info i {
+  color: #a5a3a3;
+  font-size: 20px;
+}
+.section-ajouter-employe .container .section-info .experieces {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+.section-ajouter-employe .container .section-info .experieces .experiece-item {
+  background: #ede7e7;
+  border-radius: 10px;
+  padding: 20px 10px 30px 10px;
+  position: relative;
+}
+.section-ajouter-employe .container .section-info .experieces .experiece-item .remove-experience-btn {
+  border: none;
+}
+.section-ajouter-employe .container .section-info .experieces .experiece-item .remove-experience-btn i {
+  position: absolute;
+  color: #bcbaba;
+  right: 10px;
+  top: 10px;
+  font-size: 16px;
+}
+.section-ajouter-employe .container .section-info .experieces .experiece-item .remove-experience-btn i:hover {
+  color: red;
+}
+.section-ajouter-employe .container .section-info .experieces .experiece-item p {
+  font-family: 'Kranky', serif;
+  font-size: 20px;
+  font-weight: bold;
+}
+.section-ajouter-employe .container .footer-btn {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+}
+.section-ajouter-employe .container .footer-btn .sauvegarder-employe-btn {
+  color: white;
+  font-size: 16px;
+  background: blue;
+  border-radius: 8px;
+  border: none;
+  padding: 10px 20px 10px 20px;
+}
+.section-ajouter-employe .container .footer-btn .sauvegarder-employe-btn:hover {
+  transform: translateY(-3px);
+  background-color: #ddd8d8;
+  background: #2b983b;
+}
+.section-ajouter-employe .container .footer-btn .remove-modale-ajouter-employe-btn {
+  font-size: 16px;
+  color: #a5a3a3;
+  border: 1px solid #bcbaba;
+  border-radius: 8px;
+  padding: 10px 20px 10px 20px;
+}
+.section-ajouter-employe .container .footer-btn .remove-modale-ajouter-employe-btn:hover {
+  transform: translateY(-3px);
+  background-color: #ddd8d8;
+}
+.section-ajouter-employe .container .remove-modale-add-employe-btn {
+  border: none;
+}
+.section-ajouter-employe .container .remove-modale-add-employe-btn i {
+  position: absolute;
+  color: #bcbaba;
+  right: 15px;
+  top: 15px;
+  font-size: 16px;
+}
+.section-ajouter-employe .container .remove-modale-add-employe-btn i:hover {
+  color: red;
+}
+.blur-active {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  backdrop-filter: blur(5px);
+  transition: filter 0.3s ease-out;
 }
