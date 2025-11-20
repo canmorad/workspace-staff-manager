@@ -27,6 +27,33 @@
                 <input class="rechercher" id="rechercher-employe" type="search" placeholder="Rechercher un employé">
             </div>
 
+            <div class="container-staff" id="container-staff">
+                <!-- <div class="card-employe">
+                    <div class="content-info">
+                        <div class="image-employe">
+                        </div>
+
+                        <div class="info-employe">
+                            <span class="nom">Morad Benaissa</span>
+                            <span class="role">Réceptionniste</span>
+                        </div>
+                    </div>
+
+                    <div class="employe-btn">
+
+                        <button class="delete-employe-btn">
+                            <i class="fa-solid fa-x"></i>
+                        </button>
+
+                        <button class="edit-employe-btn">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+
+                    </div>
+                </div> -->
+
+            </div>
+
         </div>
 
         <button class="ajouter-employe" id="ajouter-employe-btn">Ajout d'un employé</button>
@@ -47,17 +74,17 @@
     <section class="section-ajouter-employe" id="section-ajouter-employe">
         <div class="container">
             <div class="erorr">
-               <div class="erorr-content">
-                <img src="images/close.png" alt="">
-                <p>Un champ n'est pas valide.</p>
-               </div>
+                <div class="erorr-content">
+                    <img src="images/close.png" alt="">
+                    <p>Un champ n'est pas valide.</p>
+                </div>
             </div>
 
             <div class="valid">
-               <div class="valid-content">
-                <img src="images/check.png" alt="">
-                <p>Enregistrement réussi.</p>
-               </div>
+                <div class="valid-content">
+                    <img src="images/check.png" alt="">
+                    <p>Enregistrement réussi.</p>
+                </div>
             </div>
 
             <button class="remove-modale-add-employe-btn" id="remove-modale-add-employe-btn">
@@ -92,13 +119,15 @@
 
                         <div class="content-box">
                             <label for="role">Role :</label>
-                            <select name="" id="role">
+                            <select name="role" id="role" >
+                                <option value="" disabled selected>Sélectionnez un rôle</option>
                                 <option value="IT">IT</option>
                                 <option value="Receptionist">Receptionist</option>
                                 <option value="Securite">Securite</option>
                                 <option value="Cleaning">Cleaning</option>
                                 <option value="Other">Other</option>
                             </select>
+                            <span class="role"></span>
                         </div>
 
                         <div class="content-box">
