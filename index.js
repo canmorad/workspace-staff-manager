@@ -190,13 +190,13 @@ function renderZones() {
     renderEmployeesZone("sallesecurite" , positions.centreSalleSecurite);
 }
 
-function renderEmployeesZones(){
-    const zoneNoms = ["sallesecurite" , "salleconference" , "reception" , "salleserveurs" , "sallepersonnel" , "sallerrchives"];
+// function renderEmployeesZones(){
+//     const zoneNoms = ["sallesecurite" , "salleconference" , "reception" , "salleserveurs" , "sallepersonnel" , "sallerrchives"];
     
-    for(let i = 0 ; i<5 ; i++){
-        renderEmployeesZone(zoneNoms[i], positions[])
-    }
-}
+//     for(let i = 0 ; i<5 ; i++){
+//         renderEmployeesZone(zoneNoms[i], positions[])
+//     }
+// }
 
 function renderEmployeZoneSalleSecurite(centreSalleSecurite) {
     const containerSlot = document.getElementById('group-slot-centreSalleSecurite');
