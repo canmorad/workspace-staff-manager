@@ -260,11 +260,11 @@ aside {
 .section-ajouter-employe .container {
   width: 550px;
   height: calc(100vh - 100px);
+  position: relative;
   background: white;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 .section-ajouter-employe .container .erorr {
   display: none;
@@ -577,4 +577,124 @@ aside {
 }
 .card-employe-zone .employe-btn .delete-employe-btn i {
   color: white;
+}
+.modale-info-employe {
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.modale-info-employe .container-info-employe {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 550px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  background: white;
+  border-radius: 10px;
+  position: relative;
+}
+.modale-info-employe .container-info-employe .remove-modale-info-employe-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: none;
+  background: white;
+}
+.modale-info-employe .container-info-employe .remove-modale-info-employe-btn i {
+  position: absolute;
+  color: #bcbaba;
+  right: 7px;
+  top: 7px;
+  font-size: 16px;
+}
+.modale-info-employe .container-info-employe .remove-modale-info-employe-btn i:hover {
+  color: red;
+}
+.modale-info-employe .container-info-employe .info-imp {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+}
+.modale-info-employe .container-info-employe .info-imp .image-employe img {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  padding: 8px;
+  border: 2px solid #ddd;
+}
+.modale-info-employe .container-info-employe .info-imp .info-employe {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+.modale-info-employe .container-info-employe .info-imp .info-employe .nom {
+  font-family: 'Kranky', serif;
+  font-weight: bold;
+}
+.modale-info-employe .container-info-employe .info-imp .info-employe .role {
+  color: #1d7ec3;
+}
+.modale-info-employe .container-info-employe hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+}
+.modale-info-employe .container-info-employe .info {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  background: #ddd;
+  border-radius: 5px;
+  padding: 20px;
+}
+.modale-info-employe .container-info-employe .info div {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+}
+.modale-info-employe .container-info-employe .info div p {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
+.modale-info-employe .container-info-employe .info div span {
+  color: #4a4848;
+}
+.modale-info-employe .container-info-employe .experieces h3 {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-family: 'Kranky', serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+.modale-info-employe .container-info-employe .experieces .experiece {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  background: #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.modale-info-employe .container-info-employe .experieces .experiece div {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+}
+.modale-info-employe .container-info-employe .experieces .experiece div p {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
+.modale-info-employe .container-info-employe .experieces .experiece div span {
+  color: #4a4848;
 }

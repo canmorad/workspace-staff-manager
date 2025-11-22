@@ -48,6 +48,8 @@ let validationRules = {
 };
 
 let positions = {};
+const zoneNoms = ["centreSalleSecurite", "centreSalleConference", "centreReception", "centreSalleServeurs", "centreSallePersonnel", "centreSalleArchives"];
+
 
 function renderZones() {
     const containerSVG = document.getElementById('container-svg');
@@ -187,163 +189,162 @@ function renderZones() {
     containerSVG.innerHTML = circles;
     attachZoneListeners();
     // renderEmployeZoneSalleSecurite(positions.centreSalleSecurite);
-    renderEmployeesZone("sallesecurite" , positions.centreSalleSecurite);
+    // renderEmployeesZone("sallesecurite" , positions.centreSalleSecurite);
+    renderEmployeesZones();
 }
 
-// function renderEmployeesZones(){
-//     const zoneNoms = ["sallesecurite" , "salleconference" , "reception" , "salleserveurs" , "sallepersonnel" , "sallerrchives"];
-    
-//     for(let i = 0 ; i<5 ; i++){
-//         renderEmployeesZone(zoneNoms[i], positions[])
-//     }
-// }
-
-function renderEmployeZoneSalleSecurite(centreSalleSecurite) {
-    const containerSlot = document.getElementById('group-slot-centreSalleSecurite');
-    const employesData = getEmployeData();
-    const angles = [290, 230, 180];
-    const SVG_NS = "http://www.w3.org/2000/svg";
-
-    containerSlot.innerHTML = "";
-
-    const employesSalleSecurite = employesData.filter((employe) => {
-        if (employe.zoneID === 'sallesecurite')
-            return employe;
-    });
-
-    if (employesSalleSecurite.length <= 3) {
-
-        for (let i = 0; i < employesSalleSecurite.length; i++) {
-            const angle = angles[i];
-            const angleRad = angle * (Math.PI / 180);
-
-            const employee_cx = centreSalleSecurite.x + 110 * Math.cos(angleRad);
-            const employee_cy = centreSalleSecurite.y + 110 * Math.sin(angleRad);
-            const groupEmploye = document.createElementNS(SVG_NS, 'g');
-            groupEmploye.classList.add("employee-group-centreSalleSecurite");
-
-            groupEmploye.innerHTML = `
-                    <circle 
-                        cx="${employee_cx}" cy="${employee_cy}" 
-                        r="25" fill="#ddd" stroke="red" stroke-width="1"
-                    />
-
-                    <image 
-                        
-                        x="${employee_cx - 20}" y="${employee_cy - 20}" 
-                        width="40" height="40" 
-                        href="${employesSalleSecurite[i].photoURL}"  
-                    />
-                    
-                    <circle 
-                        cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
-                        r="8" fill="red" stroke="white"
-                    />
-                    
-                    <image 
-                        class="delete-employe-slot-btn"  
-                        data-employe-id="${employesSalleSecurite[i].email}"
-                        x="${employee_cx + 17}" y="${employee_cy - 23}" 
-                        width="15" height="15" 
-                        stroke="blue"
-                        href="svg_icon/delete.svg"  
-                    />
-           `;
-
-            const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
-            deleteButton.addEventListener('click', () => {
-                const employeId = deleteButton.getAttribute('data-employe-id');
-                removeEmployeCardZone(employeId);
-            });
-
-            containerSlot.appendChild(groupEmploye);
-        }
-    } else {
-
-        for (let i = 0; i < 3; i++) {
-            const angle = angles[i];
-            const angleRad = angle * (Math.PI / 180);
-
-            const employee_cx = centreSalleSecurite.x + 110 * Math.cos(angleRad);
-            const employee_cy = centreSalleSecurite.y + 110 * Math.sin(angleRad);
-            const groupEmploye = document.createElementNS(SVG_NS, 'g');
-            groupEmploye.classList.add("employee-group-centreSalleSecurite");
-
-            groupEmploye.innerHTML = `
-                     <circle 
-                        cx="${employee_cx}" cy="${employee_cy}" 
-                        r="25" fill="#ddd" stroke="red" stroke-width="1"
-                    />
-
-                    <image 
-                        
-                        x="${employee_cx - 20}" y="${employee_cy - 20}" 
-                        width="40" height="40" 
-                        href="${employesSalleSecurite[i].photoURL}"  
-                    />
-                    
-                    <circle 
-                        cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
-                        r="8" fill="red" stroke="white"
-                    />
-                    
-                    <image 
-                        class="delete-employe-slot-btn"  
-                        data-employe-id="${employesSalleSecurite[i].email}"
-                        x="${employee_cx + 17}" y="${employee_cy - 23}" 
-                        width="15" height="15" 
-                        stroke="blue"
-                        href="svg_icon/delete.svg"  
-                    />
-           `;
-
-            const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
-            deleteButton.addEventListener('click', () => {
-                const employeId = deleteButton.getAttribute('data-employe-id');
-                removeEmployeCardZone(employeId);
-            });
-
-            containerSlot.appendChild(groupEmploye);
-
-        }
-
-        const x = centreSalleSecurite.x + 60 * Math.cos(330 * (Math.PI / 180));
-        const y = centreSalleSecurite.y + 60 * Math.sin(330 * (Math.PI / 180));
-
-        containerSlot.innerHTML += `
-           <g id="employee-slot-sallesecurite-add">
-            <circle  
-                    data-zone="centreSalleSecurite"
-                    cx="${x}" 
-                    cy="${y}" 
-                    r="25" 
-                    fill="#ddd" 
-                    stroke="white" 
-                    stroke-width="1"
-                />
-                <text x="${x}" y="${y + 2}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">+${employesSalleSecurite.length - 3} M</text>
-           </g>
-
-        `;
-
-        document.getElementById('employee-slot-sallesecurite-add').addEventListener('click', () => {
-            const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-            const containerZoneEmploye = document.getElementById('container-zone-employe');
-            modaleZoneEmploye.style.display = 'flex';
-
-            containerZoneEmploye.innerHTML = "";
-            employesSalleSecurite.forEach((employe) => {
-                const employeCard = renderEmployeZone(employe);
-                containerZoneEmploye.appendChild(employeCard);
-            });
-        });
+function renderEmployeesZones() {
+    for (let i = 0; i < 6; i++) {
+        renderEmployeesZone(zoneNoms[i], positions[zoneNoms[i]]);
     }
 }
 
+// function renderEmployeZoneSalleSecurite(centreSalleSecurite) {
+//     const containerSlot = document.getElementById('group-slot-centreSalleSecurite');
+//     const employesData = getEmployeData();
+//     const angles = [290, 230, 180];
+//     const SVG_NS = "http://www.w3.org/2000/svg";
+
+//     containerSlot.innerHTML = "";
+
+//     const employesSalleSecurite = employesData.filter((employe) => {
+//         if (employe.zoneID === 'sallesecurite')
+//             return employe;
+//     });
+
+//     if (employesSalleSecurite.length <= 3) {
+
+//         for (let i = 0; i < employesSalleSecurite.length; i++) {
+//             const angle = angles[i];
+//             const angleRad = angle * (Math.PI / 180);
+
+//             const employee_cx = centreSalleSecurite.x + 110 * Math.cos(angleRad);
+//             const employee_cy = centreSalleSecurite.y + 110 * Math.sin(angleRad);
+//             const groupEmploye = document.createElementNS(SVG_NS, 'g');
+//             groupEmploye.classList.add("employee-group-centreSalleSecurite");
+
+//             groupEmploye.innerHTML = `
+//                     <circle 
+//                         cx="${employee_cx}" cy="${employee_cy}" 
+//                         r="25" fill="#ddd" stroke="red" stroke-width="1"
+//                     />
+
+//                     <image 
+
+//                         x="${employee_cx - 20}" y="${employee_cy - 20}" 
+//                         width="40" height="40" 
+//                         href="${employesSalleSecurite[i].photoURL}"  
+//                     />
+
+//                     <circle 
+//                         cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
+//                         r="8" fill="red" stroke="white"
+//                     />
+
+//                     <image 
+//                         class="delete-employe-slot-btn"  
+//                         data-employe-id="${employesSalleSecurite[i].email}"
+//                         x="${employee_cx + 17}" y="${employee_cy - 23}" 
+//                         width="15" height="15" 
+//                         stroke="blue"
+//                         href="svg_icon/delete.svg"  
+//                     />
+//            `;
+
+//             const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
+//             deleteButton.addEventListener('click', () => {
+//                 const employeId = deleteButton.getAttribute('data-employe-id');
+//                 removeEmployeCardZone(employeId);
+//             });
+
+//             containerSlot.appendChild(groupEmploye);
+//         }
+//     } else {
+
+//         for (let i = 0; i < 3; i++) {
+//             const angle = angles[i];
+//             const angleRad = angle * (Math.PI / 180);
+
+//             const employee_cx = centreSalleSecurite.x + 110 * Math.cos(angleRad);
+//             const employee_cy = centreSalleSecurite.y + 110 * Math.sin(angleRad);
+//             const groupEmploye = document.createElementNS(SVG_NS, 'g');
+//             groupEmploye.classList.add("employee-group-centreSalleSecurite");
+
+//             groupEmploye.innerHTML = `
+//                      <circle 
+//                         cx="${employee_cx}" cy="${employee_cy}" 
+//                         r="25" fill="#ddd" stroke="red" stroke-width="1"
+//                     />
+
+//                     <image 
+
+//                         x="${employee_cx - 20}" y="${employee_cy - 20}" 
+//                         width="40" height="40" 
+//                         href="${employesSalleSecurite[i].photoURL}"  
+//                     />
+
+//                     <circle 
+//                         cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
+//                         r="8" fill="red" stroke="white"
+//                     />
+
+//                     <image 
+//                         class="delete-employe-slot-btn"  
+//                         data-employe-id="${employesSalleSecurite[i].email}"
+//                         x="${employee_cx + 17}" y="${employee_cy - 23}" 
+//                         width="15" height="15" 
+//                         stroke="blue"
+//                         href="svg_icon/delete.svg"  
+//                     />
+//            `;
+
+//             const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
+//             deleteButton.addEventListener('click', () => {
+//                 const employeId = deleteButton.getAttribute('data-employe-id');
+//                 removeEmployeCardZone(employeId);
+//             });
+
+//             containerSlot.appendChild(groupEmploye);
+
+//         }
+
+//         const x = centreSalleSecurite.x + 60 * Math.cos(330 * (Math.PI / 180));
+//         const y = centreSalleSecurite.y + 60 * Math.sin(330 * (Math.PI / 180));
+
+//         containerSlot.innerHTML += `
+//            <g id="employee-slot-sallesecurite-add">
+//             <circle  
+//                     data-zone="centreSalleSecurite"
+//                     cx="${x}" 
+//                     cy="${y}" 
+//                     r="25" 
+//                     fill="#ddd" 
+//                     stroke="white" 
+//                     stroke-width="1"
+//                 />
+//                 <text x="${x}" y="${y + 2}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">+${employesSalleSecurite.length - 3} M</text>
+//            </g>
+
+//         `;
+
+//         document.getElementById('employee-slot-sallesecurite-add').addEventListener('click', () => {
+//             const modaleZoneEmploye = document.getElementById('modale-zone-employe');
+//             const containerZoneEmploye = document.getElementById('container-zone-employe');
+//             modaleZoneEmploye.style.display = 'flex';
+
+//             containerZoneEmploye.innerHTML = "";
+//             employesSalleSecurite.forEach((employe) => {
+//                 const employeCard = renderEmployeZone(employe);
+//                 containerZoneEmploye.appendChild(employeCard);
+//             });
+//         });
+//     }
+// }
+
 function renderEmployeesZone(zoneNom, zoneCenter) {
-    const containerSlot = document.getElementById('group-slot-centreSalleSecurite');
+    const containerSlot = document.getElementById(`group-slot-${zoneNom}`);
     const employesData = getEmployeData();
-    const angles = [290, 230, 180];
+    const angles = [280, 220, 165];
     const SVG_NS = "http://www.w3.org/2000/svg";
 
     containerSlot.innerHTML = "";
@@ -359,33 +360,34 @@ function renderEmployeesZone(zoneNom, zoneCenter) {
             const angle = angles[i];
             const angleRad = angle * (Math.PI / 180);
 
-            const employee_cx = zoneCenter.x + 110 * Math.cos(angleRad);
-            const employee_cy = zoneCenter.y + 110 * Math.sin(angleRad);
+            const employee_cx = zoneCenter.x + 80 * Math.cos(angleRad);
+            const employee_cy = zoneCenter.y + 80 * Math.sin(angleRad);
             const groupEmploye = document.createElementNS(SVG_NS, 'g');
             groupEmploye.classList.add(`employee-group-${zoneNom}`);
 
             groupEmploye.innerHTML = `
-                    <circle 
+                      <circle 
                         cx="${employee_cx}" cy="${employee_cy}" 
-                        r="25" fill="#ddd" stroke="red" stroke-width="1"
+                        r="20" fill="#ddd" stroke="red" stroke-width="2"
                     />
 
                     <image 
-                        
-                        x="${employee_cx - 20}" y="${employee_cy - 20}" 
-                        width="40" height="40" 
+                        class="info-employe"
+                        data-employe-id="${employesZone[i].email}"
+                        x="${employee_cx - 30 / 2}" y="${employee_cy - 30 / 2}" 
+                        width="30" height="30" 
                         href="${employesZone[i].photoURL}"  
                     />
                     
                     <circle 
-                        cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
+                        cx="${employee_cx}" cy="${employee_cy - 25}" 
                         r="8" fill="red" stroke="white"
                     />
                     
                     <image 
                         class="delete-employe-slot-btn"  
                         data-employe-id="${employesZone[i].email}"
-                        x="${employee_cx + 17}" y="${employee_cy - 23}" 
+                        x="${employee_cx - 7.5}" y="${employee_cy - 33}" 
                         width="15" height="15" 
                         stroke="blue"
                         href="svg_icon/delete.svg"  
@@ -393,9 +395,18 @@ function renderEmployeesZone(zoneNom, zoneCenter) {
            `;
 
             const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
+            const infoEmploye = groupEmploye.querySelector('.info-employe');
+
             deleteButton.addEventListener('click', () => {
                 const employeId = deleteButton.getAttribute('data-employe-id');
                 removeEmployeCardZone(employeId);
+
+            });
+
+            infoEmploye.addEventListener('click', () => {
+                const employeId = infoEmploye.getAttribute('data-employe-id');
+                afficherDetailEmploye(employeId);
+
             });
 
             containerSlot.appendChild(groupEmploye);
@@ -406,33 +417,34 @@ function renderEmployeesZone(zoneNom, zoneCenter) {
             const angle = angles[i];
             const angleRad = angle * (Math.PI / 180);
 
-            const employee_cx = zoneCenter.x + 110 * Math.cos(angleRad);
-            const employee_cy = zoneCenter.y + 110 * Math.sin(angleRad);
+            const employee_cx = zoneCenter.x + 80 * Math.cos(angleRad);
+            const employee_cy = zoneCenter.y + 80 * Math.sin(angleRad);
             const groupEmploye = document.createElementNS(SVG_NS, 'g');
             // groupEmploye.classList.add("employee-group-centreSalleSecurite");
 
             groupEmploye.innerHTML = `
                      <circle 
                         cx="${employee_cx}" cy="${employee_cy}" 
-                        r="25" fill="#ddd" stroke="red" stroke-width="1"
+                        r="20" fill="#ddd" stroke="red" stroke-width="2"
                     />
 
                     <image 
-                        
-                        x="${employee_cx - 20}" y="${employee_cy - 20}" 
-                        width="40" height="40" 
+                        class="info-employe"
+                        data-employe-id="${employesZone[i].email}"
+                        x="${employee_cx - 30 / 2}" y="${employee_cy - 30 / 2}" 
+                        width="30" height="30" 
                         href="${employesZone[i].photoURL}"  
                     />
                     
                     <circle 
-                        cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
+                        cx="${employee_cx}" cy="${employee_cy - 25}" 
                         r="8" fill="red" stroke="white"
                     />
                     
                     <image 
                         class="delete-employe-slot-btn"  
                         data-employe-id="${employesZone[i].email}"
-                        x="${employee_cx + 17}" y="${employee_cy - 23}" 
+                        x="${employee_cx - 7.5}" y="${employee_cy - 33}" 
                         width="15" height="15" 
                         stroke="blue"
                         href="svg_icon/delete.svg"  
@@ -440,9 +452,18 @@ function renderEmployeesZone(zoneNom, zoneCenter) {
            `;
 
             const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
+            const infoEmploye = groupEmploye.querySelector('.info-employe');
+
             deleteButton.addEventListener('click', () => {
                 const employeId = deleteButton.getAttribute('data-employe-id');
                 removeEmployeCardZone(employeId);
+
+            });
+
+            infoEmploye.addEventListener('click', () => {
+                const employeId = infoEmploye.getAttribute('data-employe-id');
+                afficherDetailEmploye(employeId);
+
             });
 
             containerSlot.appendChild(groupEmploye);
@@ -465,16 +486,16 @@ function renderEmployeesZone(zoneNom, zoneCenter) {
                                 stroke="white" 
                                 stroke-width="1"
                             />
-                            <text x="${x}" y="${y + 2}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">+${employesZone.length - 3} M</text>
+                            <text x="${x}" y="${y + 4}" font-size="16" font-weight="bold" fill="#11b3e9ff" text-anchor="middle">+${employesZone.length - 3} M</text>
                             `;
-    
+
         groupEmployeeSlotAdd.addEventListener('click', () => {
             const modaleZoneEmploye = document.getElementById('modale-zone-employe');
             const containerZoneEmploye = document.getElementById('container-zone-employe');
             modaleZoneEmploye.style.display = 'flex';
 
             containerZoneEmploye.innerHTML = "";
-            employesSalleSecurite.forEach((employe) => {
+            employesZone.forEach((employe) => {
                 const employeCard = renderEmployeZone(employe);
                 containerZoneEmploye.appendChild(employeCard);
             });
@@ -497,7 +518,7 @@ function removeEmployeCardZone(employeId) {
     localStorage.setItem('employes', JSON.stringify(employesData));
 
     renderEmployeList();
-    renderEmployeZoneSalleSecurite(positions.centreSalleSecurite);
+    renderEmployeesZones();
 }
 
 function renderEmployeZone(employe) {
@@ -509,7 +530,7 @@ function renderEmployeZone(employe) {
                             <img src="${employe.photoURL}" alt="" >
                         </div>
 
-                        <div class="info-employe">
+                        <div class="info-employe" data-employe-id="${employe.email}">
                             <span class="nom">${employe.nom}</span>
                             <span class="role">${employe.role}</span>
                         </div>
@@ -533,7 +554,35 @@ function renderEmployeZone(employe) {
         removeEmployeCardZone(employeId);
     });
 
+    cardEmploye.querySelector('.info-employe').addEventListener('click', () => {
+        const employeId = cardEmploye.querySelector('.info-employe').getAttribute('data-employe-id');
+        afficherDetailEmploye(employeId);
+    });
+
     return cardEmploye;
+}
+
+function removeEmployeToZone(employeCard, zoneNom) {
+    const modaleZoneEmploye = document.getElementById('modale-zone-employe');
+    modaleZoneEmploye.style.display = 'flex';
+    const employesData = getEmployeData();
+    const employeId = employeCard.getAttribute('data-employe-id');
+
+    for (let i = 0; i < employesData.length; i++) {
+        if (employesData[i].email === employeId) {
+            employesData[i].zoneID = zoneNom;
+            break;
+        }
+    }
+
+    localStorage.setItem('employes', JSON.stringify(employesData));
+    setTimeout(() => {
+        modaleZoneEmploye.style.display = 'none';
+    }, 200);
+
+    renderEmployeList();
+    renderEmployeesZones();
+    // renderEmployeesZone(zoneNom, positions[zoneNom]);
 }
 
 function attachZoneListeners() {
@@ -549,15 +598,32 @@ function attachZoneListeners() {
         const containerZoneEmploye = document.getElementById('container-zone-employe');
         modaleZoneEmploye.style.display = 'flex';
         const employesData = getEmployeData();
-
+        let nbrEmployes = 0;
         containerZoneEmploye.innerHTML = "";
         employesData.forEach((employe) => {
 
-            if ((employe.role !== "nettoyage") && (employe.role !== "autre")) {
+            if ((employe.role !== "nettoyage") && (employe.role !== "autre") && (employe.zoneID !== "centreSalleArchives")) {
                 const employeCard = renderEmployeZoneItem(employe);
+                nbrEmployes++;
+                employeCard.addEventListener('click', () => {
+                    removeEmployeToZone(employeCard, "centreSalleArchives");
+
+                    setTimeout(()=>{
+                        modaleZoneEmploye.style.display = 'none';
+                    },200);
+                });
                 containerZoneEmploye.appendChild(employeCard);
             }
         });
+
+        if (nbrEmployes === 0) {
+            const textVide = document.createElement("p");
+            textVide.style.fontSize = "20px";
+            textVide.style.textAlign = "centre";
+            textVide.style.color = "red";
+            textVide.innerHTML = "Aucun employé assigné à cette zone";
+            containerZoneEmploye.appendChild(textVide);
+        }
 
     });
 
@@ -566,12 +632,29 @@ function attachZoneListeners() {
         const containerZoneEmploye = document.getElementById('container-zone-employe');
         modaleZoneEmploye.style.display = 'flex';
         const employesData = getEmployeData();
-
+        let nbrEmployes = 0;
         containerZoneEmploye.innerHTML = "";
         employesData.forEach((employe) => {
-            const employeCard = renderEmployeZoneItem(employe);
-            containerZoneEmploye.appendChild(employeCard);
+            if (employe.zoneID !== "centreSallePersonnel") {
+                const employeCard = renderEmployeZoneItem(employe);
+                nbrEmployes++;
+                employeCard.addEventListener('click', () => {
+
+                    removeEmployeToZone(employeCard, "centreSallePersonnel");
+                });
+                containerZoneEmploye.appendChild(employeCard);
+            }
+
         });
+
+        if (nbrEmployes === 0) {
+            const textVide = document.createElement("p");
+            textVide.style.fontSize = "20px";
+            textVide.style.textAlign = "centre";
+            textVide.style.color = "red";
+            textVide.innerHTML = "Aucun employé assigné à cette zone";
+            containerZoneEmploye.appendChild(textVide);
+        }
     });
 
     addServeursBtn.addEventListener('click', () => {
@@ -579,16 +662,31 @@ function attachZoneListeners() {
         const containerZoneEmploye = document.getElementById('container-zone-employe');
         modaleZoneEmploye.style.display = 'flex';
         const employesData = getEmployeData();
-
+        let nbrEmployes = 0;
         containerZoneEmploye.innerHTML = "";
         employesData.forEach((employe) => {
 
-            if ((employe.role === "technicien") || (employe.role === "manager")) {
+            if (((employe.role === "technicien") || (employe.role === "manager") || (employe.role === "nettoyage"))
+                && (employe.zoneID !== "centreSalleServeurs")) {
 
                 const employeCard = renderEmployeZoneItem(employe);
+                nbrEmployes++;
+                employeCard.addEventListener('click', () => {
+
+                    removeEmployeToZone(employeCard, "centreSalleServeurs");
+                });
                 containerZoneEmploye.appendChild(employeCard);
             }
         });
+
+        if (nbrEmployes === 0) {
+            const textVide = document.createElement("p");
+            textVide.style.fontSize = "20px";
+            textVide.style.textAlign = "centre";
+            textVide.style.color = "red";
+            textVide.innerHTML = "Aucun employé assigné à cette zone";
+            containerZoneEmploye.appendChild(textVide);
+        }
     });
 
     addSecuriteBtn.addEventListener('click', () => {
@@ -596,34 +694,48 @@ function attachZoneListeners() {
         const containerZoneEmploye = document.getElementById('container-zone-employe');
         modaleZoneEmploye.style.display = 'flex';
         const employesData = getEmployeData();
-
+        let nbrEmployes = 0;
         containerZoneEmploye.innerHTML = "";
         employesData.forEach((employe) => {
-            if ((employe.role === "agentSecurite") || (employe.role === "manager")) {
+            if (((employe.role === "agentSecurite") || (employe.role === "manager") || (employe.role === "nettoyage"))
+                && (employe.zoneID !== "centreSalleSecurite")) {
+
                 const employeCard = renderEmployeZoneItem(employe);
-
+                nbrEmployes++;
                 employeCard.addEventListener('click', () => {
-                    const employeId = employeCard.getAttribute('data-employe-id');
-                    let employesData = getEmployeData();
-                    console.log('test');
-                    for (let i = 0; i < employesData.length; i++) {
-                        if (employesData[i].email === employeId) {
-                            employesData[i].zoneID = "sallesecurite";
-                            break;
-                        }
-                    }
 
-                    localStorage.setItem('employes', JSON.stringify(employesData));
-                    setTimeout(()=>{
-                        modaleZoneEmploye.style.display = 'none';
-                    }, 200);
-                    
-                    renderEmployeList();
-                    renderEmployeZoneSalleSecurite(positions.centreSalleSecurite);
+                    removeEmployeToZone(employeCard, "centreSalleSecurite");
+
+                    // const employeId = employeCard.getAttribute('data-employe-id');
+                    // let employesData = getEmployeData();
+                    // for (let i = 0; i < employesData.length; i++) {
+                    //     if (employesData[i].email === employeId) {
+                    //         employesData[i].zoneID = "centreSalleSecurite";
+                    //         break;
+                    //     }
+                    // }
+
+                    // localStorage.setItem('employes', JSON.stringify(employesData));
+                    // setTimeout(() => {
+                    //     modaleZoneEmploye.style.display = 'none';
+                    // }, 200);
+
+                    // renderEmployeList();
+                    // renderEmployeZoneSalleSecurite(positions.centreSalleSecurite);
+                    // renderEmployeesZone('centreSalleSecurite', positions.centreSalleSecurite);
                 });
                 containerZoneEmploye.appendChild(employeCard);
             }
         });
+
+        if (nbrEmployes === 0) {
+            const textVide = document.createElement("p");
+            textVide.style.fontSize = "20px";
+            textVide.style.textAlign = "centre";
+            textVide.style.color = "red";
+            textVide.innerHTML = "Aucun employé assigné à cette zone";
+            containerZoneEmploye.appendChild(textVide);
+        }
     });
 
     addReceptionBtn.addEventListener('click', () => {
@@ -631,16 +743,30 @@ function attachZoneListeners() {
         const containerZoneEmploye = document.getElementById('container-zone-employe');
         modaleZoneEmploye.style.display = 'flex';
         const employesData = getEmployeData();
-
+        let nbrEmployes = 0;
         containerZoneEmploye.innerHTML = "";
         employesData.forEach((employe) => {
 
-            if ((employe.role === "receptionniste") || (employe.role === "manager")) {
-
+            if (((employe.role === "receptionniste") || (employe.role === "manager") || (employe.role === "nettoyage"))
+                && (employe.zoneID !== "centreReception")) {
                 const employeCard = renderEmployeZoneItem(employe);
+                nbrEmployes++;
+                employeCard.addEventListener('click', () => {
+
+                    removeEmployeToZone(employeCard, "centreReception");
+                });
                 containerZoneEmploye.appendChild(employeCard);
             }
         });
+
+        if (nbrEmployes === 0) {
+            const textVide = document.createElement("p");
+            textVide.style.fontSize = "20px";
+            textVide.style.textAlign = "centre";
+            textVide.style.color = "red";
+            textVide.innerHTML = "Aucun employé assigné à cette zone";
+            containerZoneEmploye.appendChild(textVide);
+        }
     });
 
     addConferenceBtn.addEventListener('click', () => {
@@ -648,12 +774,29 @@ function attachZoneListeners() {
         const containerZoneEmploye = document.getElementById('container-zone-employe');
         modaleZoneEmploye.style.display = 'flex';
         const employesData = getEmployeData();
-
+        let nbrEmployes = 0;
         containerZoneEmploye.innerHTML = "";
         employesData.forEach((employe) => {
-            const employeCard = renderEmployeZoneItem(employe);
-            containerZoneEmploye.appendChild(employeCard);
+            if (employe.zoneID !== "centreSalleConference") {
+                const employeCard = renderEmployeZoneItem(employe);
+                nbrEmployes++;
+                employeCard.addEventListener('click', () => {
+
+                    removeEmployeToZone(employeCard, "centreSalleConference");
+                });
+                containerZoneEmploye.appendChild(employeCard);
+            }
+
         });
+
+        if (nbrEmployes === 0) {
+            const textVide = document.createElement("p");
+            textVide.style.fontSize = "20px";
+            textVide.style.textAlign = "centre";
+            textVide.style.color = "red";
+            textVide.innerHTML = "Aucun employé assigné à cette zone";
+            containerZoneEmploye.appendChild(textVide);
+        }
     });
 }
 
@@ -821,6 +964,98 @@ function ajouterBlockExperince() {
 
 }
 
+function renderExperinceCrad(exp) {
+    const experieceCard = document.createElement('div');
+    experieceCard.classList.add('experiece');
+
+    experieceCard.innerHTML = `
+                    <div>
+                        <p>Entreprise : </p><span>${exp.entreprise}</span>
+                    </div>
+
+                    <div>
+                        <p>Role :</p><span>${exp.role}</span>
+                    </div>
+
+                    <div>
+                        <p>Période :</p><span>${exp.form} - ${exp.to}</span>
+                    </div>
+    `;
+
+    return experieceCard;
+}
+
+function afficherDetailEmploye(employeId) {
+    const modaleInfoEmploye = document.createElement('div');
+    modaleInfoEmploye.classList.add('modale-info-employe');
+
+    const employeData = getEmployeData();
+    employeData.forEach((employe) => {
+        if (employe.email === employeId) {
+            console.log('test morad')
+
+            modaleInfoEmploye.innerHTML = `
+                <div class="container-info-employe">
+
+                    <button class="remove-modale-info-employe-btn">
+                        <i class="fa-solid fa-x"></i>
+                    </button>
+
+                    <div class="info-imp">
+                        
+                        <div class="image-employe">
+                            <img src="${employe.photoURL}" alt="">
+                        </div>
+
+                        <div class="info-employe">
+                            <span class="nom">${employe.nom}</span>
+                            <span class="role">${employe.role}</span>
+                        </div>
+                    </div>
+
+                   <hr>
+
+                    <div class="info">
+                        <div>
+                            <p>Email : </p><span>${employe.email}</span>
+                        </div>
+
+                        <div>
+                            <p>Téléphone : </p><span>${employe.telephone}</span>
+                        </div>
+
+                        <div>
+                            <p>Emplacement actuel : </p><span>${employe.email}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="experieces"> 
+
+                    </div>
+                </div>
+   `;
+
+            if (employe.experieces.length > 0) {
+                modaleInfoEmploye.querySelector('.experieces').innerHTML += "<h3>Expériences</h3>"
+                for (let i = 0; i < employe.experieces.length; i++) {
+                    const experieceCard = renderExperinceCrad(employe.experieces[i]);
+                    modaleInfoEmploye.querySelector('.experieces').appendChild(experieceCard);
+                }
+
+            }
+        }
+    });
+
+    modaleInfoEmploye.querySelector('.remove-modale-info-employe-btn').addEventListener('click', () => {
+        setTimeout(() => {
+            modaleInfoEmploye.remove();
+        }, 200);
+    });
+
+    document.body.appendChild(modaleInfoEmploye);
+
+}
+
 function openModaleEmploye() {
     document.getElementById('section-ajouter-employe').style.display = 'flex';
     document.getElementById('div-blur').classList.add('blur-active');
@@ -859,7 +1094,7 @@ function saveEmployeData() {
     });
 
     employeData.push({
-        zoneID: 'sallesecurite',
+        zoneID: 'unassigned',
         nom: nomCompletInput,
         role: roleInput,
         email: emailInput,
@@ -938,7 +1173,7 @@ function renderEmployeItem(employe) {
                             <img src="${employe.photoURL}" alt="" >
                         </div>
 
-                        <div class="info-employe">
+                        <div class="info-employe" data-employe-id="${employe.email}">
                             <span class="nom">${employe.nom}</span>
                             <span class="role">${employe.role}</span>
                         </div>
@@ -957,8 +1192,14 @@ function renderEmployeItem(employe) {
                     </div>
     `;
 
+    cardEmploye.querySelector('.info-employe').addEventListener('click', () => {
+        const employeId = cardEmploye.querySelector('.info-employe').getAttribute('data-employe-id');
+        afficherDetailEmploye(employeId);
+    });
+
     return cardEmploye;
 }
+
 
 function renderEmployeZoneItem(employe) {
     const cardEmploye = document.createElement('div');

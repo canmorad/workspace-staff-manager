@@ -81,6 +81,10 @@ aside {
                         flex-direction: column;
                         row-gap: 10px;
 
+                        // &:hover{
+                        //     background: red;
+                        // }
+
                         .nom {
                             font-size: 11px;
                             font-weight: bold;
@@ -293,6 +297,18 @@ aside {
                 }
             }
         }
+
+        // .modale-info-employe {
+        //     width: 250px;
+        //     height: 500px;
+        //     overflow-y: auto;
+        //     background: white;
+        //     position: absolute;
+        //     top: 10px;
+        //     right: 10px;
+        //     border-radius: 10px;
+
+        // }
     }
 
 
@@ -317,7 +333,6 @@ aside {
         border-radius: 10px;
         display: flex;
         flex-direction: column;
-        position: relative;
         // align-items: center;
 
         .erorr {
@@ -689,6 +704,157 @@ aside {
             i {
                 color: white;
             }
+        }
+    }
+}
+
+.modale-info-employe {
+    // display: none;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    .container-info-employe {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        width: 550px;
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+        background: white;
+        border-radius: 10px;
+        position: relative;
+
+
+        .remove-modale-info-employe-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            border: none;
+            background: white;
+
+            i {
+                position: absolute;
+                color: #bcbaba;
+                right: 7px;
+                top: 7px;
+                font-size: 16px;
+
+                &:hover {
+                    color: red;
+                }
+            }
+        }
+
+        .info-imp {
+            display: flex;
+            column-gap: 20px;
+            align-items: center;
+
+            .image-employe {
+
+                img {
+                    width: 75px;
+                    height: 75px;
+                    border-radius: 50%;
+                    padding: 8px;
+                    border: 2px solid #ddd;
+                }
+            }
+
+            .info-employe {
+                display: flex;
+                flex-direction: column;
+                row-gap: 10px;
+
+                .nom {
+                    font-family: 'Kranky', serif;
+                    font-weight: bold;
+                }
+
+                .role {
+                    color: rgb(29, 126, 195);
+                }
+            }
+
+        }
+
+        hr {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
+            background: #ddd;
+            border-radius: 5px;
+            padding: 20px;
+
+            div {
+
+                display: flex;
+                column-gap: 20px;
+                align-items: center;
+
+                p {
+                    margin: 0;
+                    padding: 0;
+                    font-weight: bold;
+                }
+
+                span {
+                    color: #4a4848;
+                }
+            }
+        }
+
+        .experieces {
+            h3 {
+                margin-top: 30px;
+                margin-bottom: 30px;
+                font-family: 'Kranky', serif;
+                font-weight: bold;
+                font-size: 30px;
+            }
+
+            .experiece {
+                display: flex;
+                flex-direction: column;
+                row-gap: 20px;
+                background: #ddd;
+                border-radius: 5px;
+                padding: 20px;
+                margin-bottom: 20px;
+                div {
+
+                    display: flex;
+                    column-gap: 20px;
+                    align-items: center;
+
+                    p {
+                        margin: 0;
+                        padding: 0;
+                        font-weight: bold;
+                    }
+
+                    span {
+                        color: #4a4848;
+                    }
+                }
+            }
+
+
         }
     }
 }
