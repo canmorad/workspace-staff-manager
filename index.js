@@ -72,7 +72,7 @@ function renderZones() {
     let circles = "";
 
     circles += `
-            <circle cx="${positions.centreSalleArchives.x}" cy="${positions.centreSalleArchives.y}" r="50"
+            <circle class="centreSalleArchives" cx="${positions.centreSalleArchives.x}" cy="${positions.centreSalleArchives.y}" r="50"
                     stroke="${positions.centreSalleArchives.colour}" stroke-width="4" fill="#DDD"></circle>
             <text x="${positions.centreSalleArchives.x}" y="${positions.centreSalleArchives.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle d'archives</text>
             <image x="${positions.centreSalleArchives.x - 35 / 2}" y="${positions.centreSalleArchives.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/archives.svg"/>
@@ -81,7 +81,7 @@ function renderZones() {
         `;
 
     circles += `
-            <circle cx="${positions.centreSalleConference.x}" cy="${positions.centreSalleConference.y}" r="50"
+            <circle class="centreSalleConference" cx="${positions.centreSalleConference.x}" cy="${positions.centreSalleConference.y}" r="50"
                     stroke="${positions.centreSalleConference.colour}" stroke-width="4" fill="#DDD"></circle>
             <text x="${positions.centreSalleConference.x}" y="${positions.centreSalleConference.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle de conférence</text>
             <image x="${positions.centreSalleConference.x - 35 / 2}" y="${positions.centreSalleConference.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/conference.svg"/>
@@ -90,7 +90,7 @@ function renderZones() {
         `;
 
     circles += `
-            <circle cx="${positions.centreReception.x}" cy="${positions.centreReception.y}" r="50"
+            <circle class="centreReception" cx="${positions.centreReception.x}" cy="${positions.centreReception.y}" r="50"
                     stroke="${positions.centreReception.colour}" stroke-width="4" fill="#DDD"></circle>
             <text x="${positions.centreReception.x}" y="${positions.centreReception.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Réception</text>
             <image x="${positions.centreReception.x - 35 / 2}" y="${positions.centreReception.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/reception.svg"/>
@@ -99,7 +99,7 @@ function renderZones() {
         `;
 
     circles += `
-            <circle  cx="${positions.centreSalleServeurs.x}" cy="${positions.centreSalleServeurs.y}" r="50"
+            <circle class="centreSalleServeurs"  cx="${positions.centreSalleServeurs.x}" cy="${positions.centreSalleServeurs.y}" r="50"
                     stroke="${positions.centreSalleServeurs.colour}" stroke-width="4" fill="#DDD"></circle>
             <text x="${positions.centreSalleServeurs.x}" y="${positions.centreSalleServeurs.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle des serveurs</text>
             
@@ -109,7 +109,7 @@ function renderZones() {
         `;
 
     circles += `
-            <circle cx="${positions.centreSallePersonnel.x}" cy="${positions.centreSallePersonnel.y}" r="50"
+            <circle class="centreSallePersonnel" cx="${positions.centreSallePersonnel.x}" cy="${positions.centreSallePersonnel.y}" r="50"
                     stroke="${positions.centreSallePersonnel.colour}" stroke-width="4" fill="#DDD"></circle>
             <text x="${positions.centreSallePersonnel.x}" y="${positions.centreSallePersonnel.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle du personnel</text>
             <image x="${positions.centreSallePersonnel.x - 35 / 2}" y="${positions.centreSallePersonnel.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/room.svg"/>
@@ -118,7 +118,7 @@ function renderZones() {
         `;
 
     circles += `
-            <circle cx="${positions.centreSalleSecurite.x}" cy="${positions.centreSalleSecurite.y}" r="50"
+            <circle class="centreSalleSecurite" cx="${positions.centreSalleSecurite.x}" cy="${positions.centreSalleSecurite.y}" r="50"
                     stroke="${positions.centreSalleSecurite.colour}" stroke-width="4" fill="#DDD"></circle>
             <text x="${positions.centreSalleSecurite.x}" y="${positions.centreSalleSecurite.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle de sécurité</text>
             <image x="${positions.centreSalleSecurite.x - 35 / 2}" y="${positions.centreSalleSecurite.y - 35 / 2}" width="35" height="35" href="svg_icon/security.svg"/>
@@ -188,8 +188,6 @@ function renderZones() {
 
     containerSVG.innerHTML = circles;
     attachZoneListeners();
-    // renderEmployeZoneSalleSecurite(positions.centreSalleSecurite);
-    // renderEmployeesZone("sallesecurite" , positions.centreSalleSecurite);
     renderEmployeesZones();
 }
 
@@ -198,6 +196,40 @@ function renderEmployeesZones() {
         renderEmployeesZone(zoneNoms[i], positions[zoneNoms[i]]);
     }
 }
+
+function nombreEmployesZone(zoneNom) {
+    const employeData = getEmployeData();
+    let count = 0;
+    employeData.forEach((employe) => {
+        if (employe.zoneID === zoneNom) {
+            count++;
+        }
+    });
+    return count;
+}
+
+function testZone() {
+
+    setInterval(() => {
+        zoneNoms.forEach((nom) => {
+            const circleElement = document.querySelector(`.${nom}`);
+            if (nombreEmployesZone(nom) === 0) {
+                
+                if (circleElement) {
+                    circleElement.style.stroke = 'white';
+                    setTimeout(() => {
+                        circleElement.style.stroke = 'red';
+                    }, 100);
+                }
+
+            }else{
+                circleElement.style.stroke = `${positions[nom].colour}`;              
+            }
+        });
+    }, 3000);
+
+}
+
 
 // function renderEmployeZoneSalleSecurite(centreSalleSecurite) {
 //     const containerSlot = document.getElementById('group-slot-centreSalleSecurite');
@@ -608,9 +640,9 @@ function attachZoneListeners() {
                 employeCard.addEventListener('click', () => {
                     removeEmployeToZone(employeCard, "centreSalleArchives");
 
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         modaleZoneEmploye.style.display = 'none';
-                    },200);
+                    }, 200);
                 });
                 containerZoneEmploye.appendChild(employeCard);
             }
@@ -1346,6 +1378,7 @@ function initApp() {
     renderPhoto();
     renderZones();
     renderEmployeList();
+    testZone();
 }
 
 initApp();
