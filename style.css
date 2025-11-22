@@ -169,6 +169,82 @@ aside {
   height: 95vh;
   background: #ddd;
   border-radius: 10px;
+  position: relative;
+}
+.zones .container-zones .modale-zone-employe {
+  display: none;
+  width: 250px;
+  height: 500px;
+  overflow-y: auto;
+  background: white;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 10px;
+  padding: 5px;
+}
+.zones .container-zones .modale-zone-employe .remove-modale-zone-employe-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: none;
+  background: white;
+}
+.zones .container-zones .modale-zone-employe .remove-modale-zone-employe-btn i {
+  position: absolute;
+  color: #bcbaba;
+  right: 7px;
+  top: 7px;
+  font-size: 16px;
+}
+.zones .container-zones .modale-zone-employe .remove-modale-zone-employe-btn i:hover {
+  color: red;
+}
+.zones .container-zones .modale-zone-employe #container-zone-employe {
+  width: 100%;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+.zones .container-zones .modale-zone-employe .card-employe-zone {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #cdcaca;
+  border-bottom: 1px solid #cdcaca;
+  padding: 7px 5px 7px 5px;
+  border-radius: 8px;
+}
+.zones .container-zones .modale-zone-employe .card-employe-zone .image-employe-zone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  padding: 3px;
+  border-radius: 50%;
+}
+.zones .container-zones .modale-zone-employe .card-employe-zone .image-employe-zone img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.zones .container-zones .modale-zone-employe .card-employe-zone .info-employe-zone {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+.zones .container-zones .modale-zone-employe .card-employe-zone .info-employe-zone .nom {
+  font-size: 11px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.zones .container-zones .modale-zone-employe .card-employe-zone .info-employe-zone .role {
+  font-size: 11px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.zones .container-zones .modale-zone-employe .card-employe-zone:hover {
+  background: #ddd;
 }
 .section-ajouter-employe {
   display: none;
@@ -184,11 +260,11 @@ aside {
 .section-ajouter-employe .container {
   width: 550px;
   height: calc(100vh - 100px);
+  position: relative;
   background: white;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 .section-ajouter-employe .container .erorr {
   display: none;
@@ -421,4 +497,204 @@ aside {
   z-index: 10;
   backdrop-filter: blur(5px);
   transition: filter 0.3s ease-out;
+}
+.card-employe-zone {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: #ddd;
+  border-radius: 8px;
+  border: 1px solid #cdcaca;
+  padding: 8px;
+}
+.card-employe-zone .content-info {
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+.card-employe-zone .content-info .image-employe {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  padding: 3px;
+  border-radius: 50%;
+}
+.card-employe-zone .content-info .image-employe img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.card-employe-zone .content-info .info-employe {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+.card-employe-zone .content-info .info-employe .nom {
+  font-size: 11px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.card-employe-zone .content-info .info-employe .role {
+  font-size: 11px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.card-employe-zone .employe-btn {
+  display: flex;
+  column-gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.card-employe-zone .employe-btn .info-employe-btn {
+  border: none;
+  border-radius: 50%;
+  background: blue;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card-employe-zone .employe-btn .info-employe-btn:hover {
+  transform: translateY(-3px);
+}
+.card-employe-zone .employe-btn .info-employe-btn i {
+  color: white;
+}
+.card-employe-zone .employe-btn .delete-employe-btn {
+  border: none;
+  border-radius: 50%;
+  background: red;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card-employe-zone .employe-btn .delete-employe-btn:hover {
+  transform: translateY(-3px);
+}
+.card-employe-zone .employe-btn .delete-employe-btn i {
+  color: white;
+}
+.modale-info-employe {
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.modale-info-employe .container-info-employe {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  width: 550px;
+  height: calc(100vh - 100px);
+  overflow-y: auto;
+  background: white;
+  border-radius: 10px;
+  position: relative;
+}
+.modale-info-employe .container-info-employe .remove-modale-info-employe-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  border: none;
+  background: white;
+}
+.modale-info-employe .container-info-employe .remove-modale-info-employe-btn i {
+  position: absolute;
+  color: #bcbaba;
+  right: 7px;
+  top: 7px;
+  font-size: 16px;
+}
+.modale-info-employe .container-info-employe .remove-modale-info-employe-btn i:hover {
+  color: red;
+}
+.modale-info-employe .container-info-employe .info-imp {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+}
+.modale-info-employe .container-info-employe .info-imp .image-employe img {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  padding: 8px;
+  border: 2px solid #ddd;
+}
+.modale-info-employe .container-info-employe .info-imp .info-employe {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+.modale-info-employe .container-info-employe .info-imp .info-employe .nom {
+  font-family: 'Kranky', serif;
+  font-weight: bold;
+}
+.modale-info-employe .container-info-employe .info-imp .info-employe .role {
+  color: #1d7ec3;
+}
+.modale-info-employe .container-info-employe hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+}
+.modale-info-employe .container-info-employe .info {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  background: #ddd;
+  border-radius: 5px;
+  padding: 20px;
+}
+.modale-info-employe .container-info-employe .info div {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+}
+.modale-info-employe .container-info-employe .info div p {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
+.modale-info-employe .container-info-employe .info div span {
+  color: #4a4848;
+}
+.modale-info-employe .container-info-employe .experieces h3 {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-family: 'Kranky', serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+.modale-info-employe .container-info-employe .experieces .experiece {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  background: #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.modale-info-employe .container-info-employe .experieces .experiece div {
+  display: flex;
+  column-gap: 20px;
+  align-items: center;
+}
+.modale-info-employe .container-info-employe .experieces .experiece div p {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
+.modale-info-employe .container-info-employe .experieces .experiece div span {
+  color: #4a4848;
 }
