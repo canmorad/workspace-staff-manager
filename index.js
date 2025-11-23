@@ -11,12 +11,12 @@ let validationRules = {
         validMessage: "Email valide."
     },
     telephone: {
-        regex: /^(\+?\d{1,3}[- ]?)?(\d{9,15})$/,
+        regex: /^(\+212|0)([5-7]|6)[0-9]{8}$/,
         errorMessage: "Téléphone invalide. Doit contenir entre 9 et 15 chiffres avec ou sans indicatif pays.",
         validMessage: "Numéro de téléphone valide."
     },
     'photo-url': {
-        regex: /^(http|https):\/\/[^ "']*\.(?:png|jpg|jpeg|gif|svg)$/i,
+        regex: /^(https?:\/\/.\.(png|jpg|jpeg|gif|svg)(\?.)?$|.*\.(png|jpg|jpeg|gif|svg)$)/i,
         errorMessage: "URL de photo invalide. Doit être un lien complet se terminant par une extension d'image (png, jpg, jpeg, gif, svg).",
         validMessage: "URL de photo valide."
     },
