@@ -47,20 +47,165 @@ let validationRules = {
     }
 };
 
-let positions = {};
+// let positions = {};
 const zoneNoms = ["centreSalleSecurite", "centreSalleConference", "centreReception", "centreSalleServeurs", "centreSallePersonnel", "centreSalleArchives"];
 
+const zoneInfo = {
+    centreSalleSecurite: {
+        icon: "svg_icon/security.svg",
+        nom: "Salle de sécurité",
+        restrictions: "agentSecurite,manager,nettoyage",
+        colour: "#13dff2ff",
+        limite: 2
+    },
+    centreSalleConference: {
+        icon: "svg_icon/conference.svg",
+        nom: "Salle de conférence",
+        restrictions: "",
+        colour: "#f213cdff",
+        limite: 15
+    },
+    centreReception: {
+        icon: "svg_icon/reception.svg",
+        nom: "Réception",
+        restrictions: "receptionniste,manager,nettoyage",
+        colour: "#00693E",
+        limite: 6
+    },
+    centreSalleServeurs: {
+        icon: "svg_icon/server.svg",
+        nom: "Salle des serveurs",
+        restrictions: "technicien,manager,nettoyage",
+        colour: "#FFD700",
+        limite: 3
+    },
+    centreSallePersonnel: {
+        icon: "svg_icon/room.svg",
+        nom: "Salle du personnel",
+        restrictions: "",
+        colour: "#4D4DFF",
+        limite: 8
+    },
+    centreSalleArchives: {
+        icon: "svg_icon/archives.svg",
+        nom: "Salle d'archives",
+        restrictions: "receptionniste,technicien,agentSecurite,manager",
+        colour: "#119ec9ff",
+        limite: 4
+    },
+};
+
+function renderCircleZone(zoneNom, zoneCentre) {
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    const circle = document.createElementNS(SVG_NS, 'g');
+
+    circle.innerHTML = `
+            <circle class="${zoneNom}" cx="${zoneCentre.x}" cy="${zoneCentre.y}" r="50"
+                    stroke="${zoneCentre.colour}" stroke-width="4" fill="#DDD"></circle>
+            <text x="${zoneCentre.x}" y="${zoneCentre.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">${zoneInfo[zoneNom].nom}</text>
+            <image x="${zoneCentre.x - 35 / 2}" y="${zoneCentre.y - 35 / 2}" style="color:red;" width="35" height="35" href="${zoneInfo[zoneNom].icon}"/>
+            <g id="group-slot-${zoneNom}">
+            </g>
+
+            <g class="add-btn" data-restrictions="${zoneInfo[zoneNom].restrictions}" limite-zone="${zoneInfo[zoneNom].limite}" nom-zone="${zoneNom}">
+                 <circle class="add-circle" cx="${zoneCentre.x + 100}" cy="${zoneCentre.y + 20}" r="15" fill="${zoneCentre.colour}"></circle>
+                <image  x="${zoneCentre.x + 100 - 20}" y="${zoneCentre.y}" width="40" height="40" href="svg_icon/add.svg"/>
+            </g> 
+    `;
+    const addBtn = circle.querySelector('.add-btn');
+
+    addBtn.addEventListener('click', () => {
+        const dataRestrictions = addBtn.getAttribute('data-restrictions').split(',').filter(r => r.trim() !== "");
+        const modaleZoneEmploye = document.getElementById('modale-zone-employe');
+        const containerZoneEmploye = document.getElementById('container-zone-employe');
+        const nbrEmployesZone = nombreEmployesZone(addBtn.getAttribute('nom-zone'));
+        const limiteZone = addBtn.getAttribute('limite-zone');
+        modaleZoneEmploye.style.display = 'flex';
+        const employesData = getEmployeData();
+        let nbrEmployes = 0;
+        containerZoneEmploye.innerHTML = "";
+
+        if (nbrEmployesZone >= limiteZone) {
+            const textVide = document.createElement("p");
+            textVide.style.fontSize = "20px";
+            textVide.style.textAlign = "centre";
+            textVide.style.color = "red";
+            textVide.innerHTML = "La zone est pleine impossible d'ajouter plus d'employés.";
+            containerZoneEmploye.appendChild(textVide);
+        } else {
+
+            if (!dataRestrictions.length) {
+                employesData.forEach((employe) => {
+                    if (employe.zoneID !== zoneNom) {
+                        const employeCard = renderEmployeZoneItem(employe);
+                        nbrEmployes++;
+                        employeCard.addEventListener('click', () => {
+
+                            removeEmployeToZone(employeCard, zoneNom);
+
+                        });
+                        containerZoneEmploye.appendChild(employeCard);
+                    }
+                });
+            } else {
+                employesData.forEach((employe) => {
+                    if (dataRestrictions.includes(employe.role) && employe.zoneID !== zoneNom) {
+                        const employeCard = renderEmployeZoneItem(employe);
+                        nbrEmployes++;
+                        employeCard.addEventListener('click', () => {
+
+                            removeEmployeToZone(employeCard, zoneNom);
+
+                        });
+                        containerZoneEmploye.appendChild(employeCard);
+                    }
+                });
+
+                if (nbrEmployes === 0) {
+                    const textVide = document.createElement("p");
+                    textVide.style.fontSize = "20px";
+                    textVide.style.textAlign = "centre";
+                    textVide.style.color = "red";
+                    textVide.innerHTML = "Aucun employé assigné à cette zone";
+                    containerZoneEmploye.appendChild(textVide);
+                }
+            }
+        }
+
+    });
+
+    return circle;
+}
 
 function renderZones() {
     const containerSVG = document.getElementById('container-svg');
     const rectSVG = containerSVG.getBoundingClientRect();
+    containerSVG.innerHTML = "";
 
     centreSalleSecurite = {
         x: rectSVG.width / 2,
         y: rectSVG.height / 2
     };
 
-    positions = {
+    const mobilePositions = {
+        centreSalleSecurite: { x: rectSVG.width * 0.5, y: 220 * 1, colour: "#13dff2ff" },
+        centreSalleConference: { x: rectSVG.width * 0.5, y: 220 * 2, colour: "#f213cdff" },
+        centreReception: { x: rectSVG.width * 0.5, y: 220 * 3, colour: "#00693E" },
+        centreSalleServeurs: { x: rectSVG.width * 0.5, y: 220 * 4, colour: "#FFD700" },
+        centreSallePersonnel: { x: rectSVG.width * 0.5, y: 220 * 5, colour: "#4D4DFF" },
+        centreSalleArchives: { x: rectSVG.width * 0.5, y: 220 * 6, colour: "#119ec9ff" }
+    };
+
+    const tablettePositions = {
+        centreSalleSecurite: { x: rectSVG.width * 0.5, y: 220 * 1, colour: "#13dff2ff" },
+        centreSalleConference: { x: rectSVG.width * 0.5, y: 220 * 2, colour: "#f213cdff" },
+        centreReception: { x: rectSVG.width * 0.5, y: 220 * 3, colour: "#00693E" },
+        centreSalleServeurs: { x: rectSVG.width * 0.5, y: 220 * 4, colour: "#FFD700" },
+        centreSallePersonnel: { x: rectSVG.width * 0.5, y: 220 * 5, colour: "#4D4DFF" },
+        centreSalleArchives: { x: rectSVG.width * 0.5, y: 220 * 6, colour: "#119ec9ff" }
+    };
+
+    const desktopPositions = {
         centreSalleSecurite: { x: rectSVG.width * 0.2, y: rectSVG.height * 0.2, colour: "#13dff2ff" },
         centreSalleConference: { x: rectSVG.width * 0.8, y: rectSVG.height * 0.2, colour: "#f213cdff" },
         centreReception: { x: rectSVG.width * 0.2, y: rectSVG.height * 0.8, colour: "#00693E" },
@@ -69,129 +214,35 @@ function renderZones() {
         centreSalleArchives: { x: rectSVG.width * 0.65, y: rectSVG.height * 0.5, colour: "#119ec9ff" }
     };
 
-    let circles = "";
+    if (window.innerWidth < 767) {
 
-    circles += `
-            <circle class="centreSalleArchives" cx="${positions.centreSalleArchives.x}" cy="${positions.centreSalleArchives.y}" r="50"
-                    stroke="${positions.centreSalleArchives.colour}" stroke-width="4" fill="#DDD"></circle>
-            <text x="${positions.centreSalleArchives.x}" y="${positions.centreSalleArchives.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle d'archives</text>
-            <image x="${positions.centreSalleArchives.x - 35 / 2}" y="${positions.centreSalleArchives.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/archives.svg"/>
-            <g id="group-slot-centreSalleArchives">
-             </g>
-        `;
+        zoneNoms.forEach((nom) => {
+            const circleZone = renderCircleZone(nom, mobilePositions[nom]);
+            containerSVG.appendChild(circleZone);
+        });
 
-    circles += `
-            <circle class="centreSalleConference" cx="${positions.centreSalleConference.x}" cy="${positions.centreSalleConference.y}" r="50"
-                    stroke="${positions.centreSalleConference.colour}" stroke-width="4" fill="#DDD"></circle>
-            <text x="${positions.centreSalleConference.x}" y="${positions.centreSalleConference.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle de conférence</text>
-            <image x="${positions.centreSalleConference.x - 35 / 2}" y="${positions.centreSalleConference.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/conference.svg"/>
-            <g id="group-slot-centreSalleConference">
-             </g>
-        `;
+        renderEmployeesZones(mobilePositions);
 
-    circles += `
-            <circle class="centreReception" cx="${positions.centreReception.x}" cy="${positions.centreReception.y}" r="50"
-                    stroke="${positions.centreReception.colour}" stroke-width="4" fill="#DDD"></circle>
-            <text x="${positions.centreReception.x}" y="${positions.centreReception.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Réception</text>
-            <image x="${positions.centreReception.x - 35 / 2}" y="${positions.centreReception.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/reception.svg"/>
-            <g id="group-slot-centreReception">
-             </g>
-        `;
+    } else if (window.innerWidth > 768 && window.innerWidth < 1023) {
+        zoneNoms.forEach((nom) => {
+            const circleZone = renderCircleZone(nom, tablettePositions[nom]);
+            containerSVG.appendChild(circleZone);
+        });
 
-    circles += `
-            <circle class="centreSalleServeurs"  cx="${positions.centreSalleServeurs.x}" cy="${positions.centreSalleServeurs.y}" r="50"
-                    stroke="${positions.centreSalleServeurs.colour}" stroke-width="4" fill="#DDD"></circle>
-            <text x="${positions.centreSalleServeurs.x}" y="${positions.centreSalleServeurs.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle des serveurs</text>
-            
-            <image x="${positions.centreSalleServeurs.x - 35 / 2}" y="${positions.centreSalleServeurs.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/server.svg"/>
-            <g id="group-slot-centreSalleServeurs">
-             </g>
-        `;
+        renderEmployeesZones(mobilePositions);
+    } else {
+        zoneNoms.forEach((nom) => {
+            const circleZone = renderCircleZone(nom, desktopPositions[nom]);
+            containerSVG.appendChild(circleZone);
+        });
 
-    circles += `
-            <circle class="centreSallePersonnel" cx="${positions.centreSallePersonnel.x}" cy="${positions.centreSallePersonnel.y}" r="50"
-                    stroke="${positions.centreSallePersonnel.colour}" stroke-width="4" fill="#DDD"></circle>
-            <text x="${positions.centreSallePersonnel.x}" y="${positions.centreSallePersonnel.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle du personnel</text>
-            <image x="${positions.centreSallePersonnel.x - 35 / 2}" y="${positions.centreSallePersonnel.y - 35 / 2}" style="color:red;" width="35" height="35" href="svg_icon/room.svg"/>
-            <g id="group-slot-centreSallePersonnel">
-             </g>
-        `;
-
-    circles += `
-            <circle class="centreSalleSecurite" cx="${positions.centreSalleSecurite.x}" cy="${positions.centreSalleSecurite.y}" r="50"
-                    stroke="${positions.centreSalleSecurite.colour}" stroke-width="4" fill="#DDD"></circle>
-            <text x="${positions.centreSalleSecurite.x}" y="${positions.centreSalleSecurite.y + 50 + 20}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Salle de sécurité</text>
-            <image x="${positions.centreSalleSecurite.x - 35 / 2}" y="${positions.centreSalleSecurite.y - 35 / 2}" width="35" height="35" href="svg_icon/security.svg"/>
-            <g id="group-slot-centreSalleSecurite">
-             </g>
-        `;
-
-    let x_add_archives = positions.centreSalleArchives.x + 100;
-    let y_add_archives = positions.centreSalleArchives.y + 20;
-
-    circles += `
-        <g id="add-archives-btn">
-            <circle class="add-circle" cx="${x_add_archives}" cy="${y_add_archives}" r="15" fill="${positions.centreSalleArchives.colour}"></circle>
-                <image  x="${x_add_archives - 20}" y="${y_add_archives - 20}" width="40" height="40" href="svg_icon/add.svg"/>
-        </g>  
-        `;
-
-    let x_add_conference = positions.centreSalleConference.x + 100;
-    let y_add_conference = positions.centreSalleConference.y + 20;
-    circles += `
-        <g id="add-conference-btn">
-            <circle class="add-circle"  cx="${x_add_conference}" cy="${y_add_conference}" r="15" fill="${positions.centreSalleConference.colour}"></circle>
-            <image  x="${x_add_conference - 20}" y="${y_add_conference - 20}" width="40" height="40" href="svg_icon/add.svg"/>
-       
-        </g> 
-             `;
-
-    let x_add_reception = positions.centreReception.x + 100;
-    let y_add_reception = positions.centreReception.y + 20;
-    circles += `
-        <g id="add-reception-btn">
-            <circle class="add-circle"  cx="${x_add_reception}" cy="${y_add_reception}" r="15" fill="${positions.centreReception.colour}"></circle>
-            <image x="${x_add_reception - 20}" y="${y_add_reception - 20}" width="40" height="40" href="svg_icon/add.svg"/>
-     
-        </g>
-               `;
-
-    let x_add_serveurs = positions.centreSalleServeurs.x + 100;
-    let y_add_serveurs = positions.centreSalleServeurs.y + 20;
-    circles += `
-        <g id="add-serveurs-btn">
-            <circle class="add-circle"  cx="${x_add_serveurs}" cy="${y_add_serveurs}" r="15" fill="${positions.centreSalleServeurs.colour}"></circle>
-            <image  x="${x_add_serveurs - 20}" y="${y_add_serveurs - 20}" width="40" height="40" href="svg_icon/add.svg"/>
-      
-        </g>
-             `;
+        renderEmployeesZones(desktopPositions);
+    }
 
 
-    let x_add_personnel = positions.centreSallePersonnel.x + 100;
-    let y_add_personnel = positions.centreSallePersonnel.y + 20;
-    circles += `
-        <g id="add-personnel-btn">
-           <circle class="add-circle" cx="${x_add_personnel}" cy="${y_add_personnel}" r="15" fill="${positions.centreSallePersonnel.colour}"></circle>
-            <image  x="${x_add_personnel - 20}" y="${y_add_personnel - 20}" width="40" height="40" href="svg_icon/add.svg"/>
-      
-        </g>
-              `;
-
-    let x_add_securite = positions.centreSalleSecurite.x + 100;
-    let y_add_securite = positions.centreSalleSecurite.y + 20;
-    circles += `
-        <g id="add-securite-btn">
-            <circle class="add-circle"  cx="${x_add_securite}" cy="${y_add_securite}" r="15" fill="${positions.centreSalleSecurite.colour}"></circle>
-            <image  x="${x_add_securite - 20}" y="${y_add_securite - 20}" width="40" height="40" href="svg_icon/add.svg"/>
-        </g>
-            `;
-
-    containerSVG.innerHTML = circles;
-    attachZoneListeners();
-    renderEmployeesZones();
 }
 
-function renderEmployeesZones() {
+function renderEmployeesZones(positions) {
     for (let i = 0; i < 6; i++) {
         renderEmployeesZone(zoneNoms[i], positions[zoneNoms[i]]);
     }
@@ -212,166 +263,26 @@ function testZone() {
 
     setInterval(() => {
         zoneNoms.forEach((nom) => {
-            const circleElement = document.querySelector(`.${nom}`);
-            if (nombreEmployesZone(nom) === 0) {
-                
-                if (circleElement) {
-                    circleElement.style.stroke = 'white';
-                    setTimeout(() => {
-                        circleElement.style.stroke = 'red';
-                    }, 100);
-                }
+            if (nom !== "centreSalleConference" && nom !== "centreSallePersonnel") {
+                const circleElement = document.querySelector(`.${nom}`);
+                if (nombreEmployesZone(nom) === 0) {
 
-            }else{
-                circleElement.style.stroke = `${positions[nom].colour}`;              
+                    if (circleElement) {
+                        circleElement.style.stroke = 'white';
+                        setTimeout(() => {
+                            circleElement.style.stroke = 'red';
+                        }, 100);
+                    }
+
+                } else {
+                    circleElement.style.stroke = `${zoneInfo[nom].colour}`;
+                }
             }
+
         });
     }, 3000);
 
 }
-
-
-// function renderEmployeZoneSalleSecurite(centreSalleSecurite) {
-//     const containerSlot = document.getElementById('group-slot-centreSalleSecurite');
-//     const employesData = getEmployeData();
-//     const angles = [290, 230, 180];
-//     const SVG_NS = "http://www.w3.org/2000/svg";
-
-//     containerSlot.innerHTML = "";
-
-//     const employesSalleSecurite = employesData.filter((employe) => {
-//         if (employe.zoneID === 'sallesecurite')
-//             return employe;
-//     });
-
-//     if (employesSalleSecurite.length <= 3) {
-
-//         for (let i = 0; i < employesSalleSecurite.length; i++) {
-//             const angle = angles[i];
-//             const angleRad = angle * (Math.PI / 180);
-
-//             const employee_cx = centreSalleSecurite.x + 110 * Math.cos(angleRad);
-//             const employee_cy = centreSalleSecurite.y + 110 * Math.sin(angleRad);
-//             const groupEmploye = document.createElementNS(SVG_NS, 'g');
-//             groupEmploye.classList.add("employee-group-centreSalleSecurite");
-
-//             groupEmploye.innerHTML = `
-//                     <circle 
-//                         cx="${employee_cx}" cy="${employee_cy}" 
-//                         r="25" fill="#ddd" stroke="red" stroke-width="1"
-//                     />
-
-//                     <image 
-
-//                         x="${employee_cx - 20}" y="${employee_cy - 20}" 
-//                         width="40" height="40" 
-//                         href="${employesSalleSecurite[i].photoURL}"  
-//                     />
-
-//                     <circle 
-//                         cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
-//                         r="8" fill="red" stroke="white"
-//                     />
-
-//                     <image 
-//                         class="delete-employe-slot-btn"  
-//                         data-employe-id="${employesSalleSecurite[i].email}"
-//                         x="${employee_cx + 17}" y="${employee_cy - 23}" 
-//                         width="15" height="15" 
-//                         stroke="blue"
-//                         href="svg_icon/delete.svg"  
-//                     />
-//            `;
-
-//             const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
-//             deleteButton.addEventListener('click', () => {
-//                 const employeId = deleteButton.getAttribute('data-employe-id');
-//                 removeEmployeCardZone(employeId);
-//             });
-
-//             containerSlot.appendChild(groupEmploye);
-//         }
-//     } else {
-
-//         for (let i = 0; i < 3; i++) {
-//             const angle = angles[i];
-//             const angleRad = angle * (Math.PI / 180);
-
-//             const employee_cx = centreSalleSecurite.x + 110 * Math.cos(angleRad);
-//             const employee_cy = centreSalleSecurite.y + 110 * Math.sin(angleRad);
-//             const groupEmploye = document.createElementNS(SVG_NS, 'g');
-//             groupEmploye.classList.add("employee-group-centreSalleSecurite");
-
-//             groupEmploye.innerHTML = `
-//                      <circle 
-//                         cx="${employee_cx}" cy="${employee_cy}" 
-//                         r="25" fill="#ddd" stroke="red" stroke-width="1"
-//                     />
-
-//                     <image 
-
-//                         x="${employee_cx - 20}" y="${employee_cy - 20}" 
-//                         width="40" height="40" 
-//                         href="${employesSalleSecurite[i].photoURL}"  
-//                     />
-
-//                     <circle 
-//                         cx="${employee_cx + 25}" cy="${employee_cy - 15}" 
-//                         r="8" fill="red" stroke="white"
-//                     />
-
-//                     <image 
-//                         class="delete-employe-slot-btn"  
-//                         data-employe-id="${employesSalleSecurite[i].email}"
-//                         x="${employee_cx + 17}" y="${employee_cy - 23}" 
-//                         width="15" height="15" 
-//                         stroke="blue"
-//                         href="svg_icon/delete.svg"  
-//                     />
-//            `;
-
-//             const deleteButton = groupEmploye.querySelector('.delete-employe-slot-btn');
-//             deleteButton.addEventListener('click', () => {
-//                 const employeId = deleteButton.getAttribute('data-employe-id');
-//                 removeEmployeCardZone(employeId);
-//             });
-
-//             containerSlot.appendChild(groupEmploye);
-
-//         }
-
-//         const x = centreSalleSecurite.x + 60 * Math.cos(330 * (Math.PI / 180));
-//         const y = centreSalleSecurite.y + 60 * Math.sin(330 * (Math.PI / 180));
-
-//         containerSlot.innerHTML += `
-//            <g id="employee-slot-sallesecurite-add">
-//             <circle  
-//                     data-zone="centreSalleSecurite"
-//                     cx="${x}" 
-//                     cy="${y}" 
-//                     r="25" 
-//                     fill="#ddd" 
-//                     stroke="white" 
-//                     stroke-width="1"
-//                 />
-//                 <text x="${x}" y="${y + 2}" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">+${employesSalleSecurite.length - 3} M</text>
-//            </g>
-
-//         `;
-
-//         document.getElementById('employee-slot-sallesecurite-add').addEventListener('click', () => {
-//             const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-//             const containerZoneEmploye = document.getElementById('container-zone-employe');
-//             modaleZoneEmploye.style.display = 'flex';
-
-//             containerZoneEmploye.innerHTML = "";
-//             employesSalleSecurite.forEach((employe) => {
-//                 const employeCard = renderEmployeZone(employe);
-//                 containerZoneEmploye.appendChild(employeCard);
-//             });
-//         });
-//     }
-// }
 
 function renderEmployeesZone(zoneNom, zoneCenter) {
     const containerSlot = document.getElementById(`group-slot-${zoneNom}`);
@@ -432,7 +343,6 @@ function renderEmployeesZone(zoneNom, zoneCenter) {
             deleteButton.addEventListener('click', () => {
                 const employeId = deleteButton.getAttribute('data-employe-id');
                 removeEmployeCardZone(employeId);
-
             });
 
             infoEmploye.addEventListener('click', () => {
@@ -550,7 +460,7 @@ function removeEmployeCardZone(employeId) {
     localStorage.setItem('employes', JSON.stringify(employesData));
 
     renderEmployeList();
-    renderEmployeesZones();
+    renderZones();
 }
 
 function renderEmployeZone(employe) {
@@ -613,223 +523,7 @@ function removeEmployeToZone(employeCard, zoneNom) {
     }, 200);
 
     renderEmployeList();
-    renderEmployeesZones();
-    // renderEmployeesZone(zoneNom, positions[zoneNom]);
-}
-
-function attachZoneListeners() {
-    const addSecuriteBtn = document.getElementById('add-securite-btn');
-    const addPersonnelBtn = document.getElementById('add-personnel-btn');
-    const addServeursBtn = document.getElementById('add-serveurs-btn');
-    const addReceptionBtn = document.getElementById('add-reception-btn');
-    const addConferenceBtn = document.getElementById('add-conference-btn');
-    const addArchivesBtn = document.getElementById('add-archives-btn');
-
-    addArchivesBtn.addEventListener('click', () => {
-        const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-        const containerZoneEmploye = document.getElementById('container-zone-employe');
-        modaleZoneEmploye.style.display = 'flex';
-        const employesData = getEmployeData();
-        let nbrEmployes = 0;
-        containerZoneEmploye.innerHTML = "";
-        employesData.forEach((employe) => {
-
-            if ((employe.role !== "nettoyage") && (employe.role !== "autre") && (employe.zoneID !== "centreSalleArchives")) {
-                const employeCard = renderEmployeZoneItem(employe);
-                nbrEmployes++;
-                employeCard.addEventListener('click', () => {
-                    removeEmployeToZone(employeCard, "centreSalleArchives");
-
-                    setTimeout(() => {
-                        modaleZoneEmploye.style.display = 'none';
-                    }, 200);
-                });
-                containerZoneEmploye.appendChild(employeCard);
-            }
-        });
-
-        if (nbrEmployes === 0) {
-            const textVide = document.createElement("p");
-            textVide.style.fontSize = "20px";
-            textVide.style.textAlign = "centre";
-            textVide.style.color = "red";
-            textVide.innerHTML = "Aucun employé assigné à cette zone";
-            containerZoneEmploye.appendChild(textVide);
-        }
-
-    });
-
-    addPersonnelBtn.addEventListener('click', () => {
-        const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-        const containerZoneEmploye = document.getElementById('container-zone-employe');
-        modaleZoneEmploye.style.display = 'flex';
-        const employesData = getEmployeData();
-        let nbrEmployes = 0;
-        containerZoneEmploye.innerHTML = "";
-        employesData.forEach((employe) => {
-            if (employe.zoneID !== "centreSallePersonnel") {
-                const employeCard = renderEmployeZoneItem(employe);
-                nbrEmployes++;
-                employeCard.addEventListener('click', () => {
-
-                    removeEmployeToZone(employeCard, "centreSallePersonnel");
-                });
-                containerZoneEmploye.appendChild(employeCard);
-            }
-
-        });
-
-        if (nbrEmployes === 0) {
-            const textVide = document.createElement("p");
-            textVide.style.fontSize = "20px";
-            textVide.style.textAlign = "centre";
-            textVide.style.color = "red";
-            textVide.innerHTML = "Aucun employé assigné à cette zone";
-            containerZoneEmploye.appendChild(textVide);
-        }
-    });
-
-    addServeursBtn.addEventListener('click', () => {
-        const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-        const containerZoneEmploye = document.getElementById('container-zone-employe');
-        modaleZoneEmploye.style.display = 'flex';
-        const employesData = getEmployeData();
-        let nbrEmployes = 0;
-        containerZoneEmploye.innerHTML = "";
-        employesData.forEach((employe) => {
-
-            if (((employe.role === "technicien") || (employe.role === "manager") || (employe.role === "nettoyage"))
-                && (employe.zoneID !== "centreSalleServeurs")) {
-
-                const employeCard = renderEmployeZoneItem(employe);
-                nbrEmployes++;
-                employeCard.addEventListener('click', () => {
-
-                    removeEmployeToZone(employeCard, "centreSalleServeurs");
-                });
-                containerZoneEmploye.appendChild(employeCard);
-            }
-        });
-
-        if (nbrEmployes === 0) {
-            const textVide = document.createElement("p");
-            textVide.style.fontSize = "20px";
-            textVide.style.textAlign = "centre";
-            textVide.style.color = "red";
-            textVide.innerHTML = "Aucun employé assigné à cette zone";
-            containerZoneEmploye.appendChild(textVide);
-        }
-    });
-
-    addSecuriteBtn.addEventListener('click', () => {
-        const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-        const containerZoneEmploye = document.getElementById('container-zone-employe');
-        modaleZoneEmploye.style.display = 'flex';
-        const employesData = getEmployeData();
-        let nbrEmployes = 0;
-        containerZoneEmploye.innerHTML = "";
-        employesData.forEach((employe) => {
-            if (((employe.role === "agentSecurite") || (employe.role === "manager") || (employe.role === "nettoyage"))
-                && (employe.zoneID !== "centreSalleSecurite")) {
-
-                const employeCard = renderEmployeZoneItem(employe);
-                nbrEmployes++;
-                employeCard.addEventListener('click', () => {
-
-                    removeEmployeToZone(employeCard, "centreSalleSecurite");
-
-                    // const employeId = employeCard.getAttribute('data-employe-id');
-                    // let employesData = getEmployeData();
-                    // for (let i = 0; i < employesData.length; i++) {
-                    //     if (employesData[i].email === employeId) {
-                    //         employesData[i].zoneID = "centreSalleSecurite";
-                    //         break;
-                    //     }
-                    // }
-
-                    // localStorage.setItem('employes', JSON.stringify(employesData));
-                    // setTimeout(() => {
-                    //     modaleZoneEmploye.style.display = 'none';
-                    // }, 200);
-
-                    // renderEmployeList();
-                    // renderEmployeZoneSalleSecurite(positions.centreSalleSecurite);
-                    // renderEmployeesZone('centreSalleSecurite', positions.centreSalleSecurite);
-                });
-                containerZoneEmploye.appendChild(employeCard);
-            }
-        });
-
-        if (nbrEmployes === 0) {
-            const textVide = document.createElement("p");
-            textVide.style.fontSize = "20px";
-            textVide.style.textAlign = "centre";
-            textVide.style.color = "red";
-            textVide.innerHTML = "Aucun employé assigné à cette zone";
-            containerZoneEmploye.appendChild(textVide);
-        }
-    });
-
-    addReceptionBtn.addEventListener('click', () => {
-        const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-        const containerZoneEmploye = document.getElementById('container-zone-employe');
-        modaleZoneEmploye.style.display = 'flex';
-        const employesData = getEmployeData();
-        let nbrEmployes = 0;
-        containerZoneEmploye.innerHTML = "";
-        employesData.forEach((employe) => {
-
-            if (((employe.role === "receptionniste") || (employe.role === "manager") || (employe.role === "nettoyage"))
-                && (employe.zoneID !== "centreReception")) {
-                const employeCard = renderEmployeZoneItem(employe);
-                nbrEmployes++;
-                employeCard.addEventListener('click', () => {
-
-                    removeEmployeToZone(employeCard, "centreReception");
-                });
-                containerZoneEmploye.appendChild(employeCard);
-            }
-        });
-
-        if (nbrEmployes === 0) {
-            const textVide = document.createElement("p");
-            textVide.style.fontSize = "20px";
-            textVide.style.textAlign = "centre";
-            textVide.style.color = "red";
-            textVide.innerHTML = "Aucun employé assigné à cette zone";
-            containerZoneEmploye.appendChild(textVide);
-        }
-    });
-
-    addConferenceBtn.addEventListener('click', () => {
-        const modaleZoneEmploye = document.getElementById('modale-zone-employe');
-        const containerZoneEmploye = document.getElementById('container-zone-employe');
-        modaleZoneEmploye.style.display = 'flex';
-        const employesData = getEmployeData();
-        let nbrEmployes = 0;
-        containerZoneEmploye.innerHTML = "";
-        employesData.forEach((employe) => {
-            if (employe.zoneID !== "centreSalleConference") {
-                const employeCard = renderEmployeZoneItem(employe);
-                nbrEmployes++;
-                employeCard.addEventListener('click', () => {
-
-                    removeEmployeToZone(employeCard, "centreSalleConference");
-                });
-                containerZoneEmploye.appendChild(employeCard);
-            }
-
-        });
-
-        if (nbrEmployes === 0) {
-            const textVide = document.createElement("p");
-            textVide.style.fontSize = "20px";
-            textVide.style.textAlign = "centre";
-            textVide.style.color = "red";
-            textVide.innerHTML = "Aucun employé assigné à cette zone";
-            containerZoneEmploye.appendChild(textVide);
-        }
-    });
+    renderZones();
 }
 
 function renderPhoto() {
@@ -914,7 +608,6 @@ function ajouterBlockExperince() {
                 let value = input.value.trim();
                 let regex = validationRules[input.name].regex;
                 let errorSpan = nouveauBlock.querySelector('.' + input.name);
-                console.log(errorSpan);
                 errorSpan.innerHTML = "";
 
                 if (value.length > 0) {
@@ -1024,8 +717,6 @@ function afficherDetailEmploye(employeId) {
     const employeData = getEmployeData();
     employeData.forEach((employe) => {
         if (employe.email === employeId) {
-            console.log('test morad')
-
             modaleInfoEmploye.innerHTML = `
                 <div class="container-info-employe">
 
@@ -1096,6 +787,18 @@ function openModaleEmploye() {
 function closeModaleEmploye() {
     document.getElementById('section-ajouter-employe').style.display = 'none';
     document.getElementById('div-blur').classList.remove('blur-active');
+    const formInfoEmploye = document.getElementById('form-info-employe');
+    const containerPhoto = document.getElementById('content-photo');
+    const experieces = document.getElementById('experieces');
+    experieces.innerHTML = "";
+    formInfoEmploye.querySelectorAll('input').forEach((input) => {
+        input.style.border = "1px solid #bcbaba";
+    });
+    formInfoEmploye.querySelector('select').style.border = "1px solid #bcbaba";
+
+    formInfoEmploye.reset();
+
+    containerPhoto.style.display = 'none'
 }
 
 function saveEmployeData() {
@@ -1286,11 +989,22 @@ function attachEmployeListListneres() {
     deleteEmployeBtn.forEach((deleteBtn) => {
         deleteBtn.addEventListener('click', () => {
             const employeId = deleteBtn.getAttribute('data-employe-id');
-            console.log(employeId);
             removeEmployeCard(employeId);
         })
     })
 }
+
+function estEmailExiste(email) {
+    const employeData = getEmployeData();
+
+    for (const employe of employeData) {
+        if (employe.email === email) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 function initApp() {
     const ajouterEmployeBtn = document.getElementById('ajouter-employe-btn');
@@ -1298,6 +1012,23 @@ function initApp() {
     const rechercherEmploye = document.getElementById('rechercher-employe');
     const formInfoEmploye = document.getElementById('form-info-employe');
     const removeModaleZoneEmployeBtn = document.querySelector('.remove-modale-zone-employe-btn');
+    const unassignedStaffBtn = document.getElementById('unassigned-staff-btn');
+    const removeUnassignedStaffBtn = document.querySelector('.remove-unassigned-staff-btn');
+    const ajouterEmployeMobileBtn = document.querySelector('.ajouter-employe-btn');
+
+    removeUnassignedStaffBtn.addEventListener('click', () => {
+        const unassignedStaffSection = document.querySelector('.unassigned-staff');
+
+        unassignedStaffSection.style.display = 'none';
+
+    });
+
+    unassignedStaffBtn.addEventListener('click', () => {
+        const unassignedStaffSection = document.querySelector('.unassigned-staff');
+
+        unassignedStaffSection.style.display = 'block';
+
+    });
 
     removeModaleZoneEmployeBtn.addEventListener('click', () => {
         const modaleZoneEmploye = document.getElementById('modale-zone-employe');
@@ -1305,6 +1036,8 @@ function initApp() {
     })
 
     ajouterEmployeBtn.addEventListener('click', openModaleEmploye);
+
+    ajouterEmployeMobileBtn.addEventListener('click', openModaleEmploye);
 
     removeModaleBtn.addEventListener('click', closeModaleEmploye);
 
@@ -1349,6 +1082,18 @@ function initApp() {
                     }, 3000);
                 }
                 else {
+                    if (input.type === "email" && estEmailExiste(value)) {
+                        input.style.border = "3px solid red";
+                        errorSpan.innerText = "Cette adresse email déjà utilisée";
+                        errorSpan.style.color = 'red';
+
+                        setTimeout(() => {
+                            errorSpan.innerText = "";
+                        }, 3000);
+                        return;
+
+                    }
+
                     input.style.border = "3px solid green";
                     errorSpan.innerText = validationRules[input.name].validMessage;
                     errorSpan.style.color = 'green';
@@ -1372,6 +1117,13 @@ function initApp() {
         setTimeout(() => {
             errorSpan.innerText = "";
         }, 3000);
+    });
+
+    window.addEventListener('resize', () => {
+
+        setTimeout(() => {
+            renderZones();
+        }, 100);
     });
 
     ajouterBlockExperince();
