@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Staff Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kranky&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Work+Sans:wght@410&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+
+            <div class="logo">
+
+                <h1>
+                    <span class="name-black">Workspace Staff </span>
+                    <span class="name-ball">Manager</span>
+                </h1>
+
+            </div>
+
+            <nav>
+                <span id="unassigned-staff-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </span>
+            </nav>
+        </div>
+    </header>
+
+    <aside>
+
+    </aside>
+
+    <section class="unassigned-staff">
+        <div class="container">
+
+            <button class="remove-unassigned-staff-btn">
+                <i class="fa-solid fa-x"></i>
+            </button>
+
+            <h3>Employés non affectés</h3>
+
+            <div class="box-search">
+                <i class="fa-solid fa-magnifying-glass" id="icon-search"></i>
+                <input class="rechercher" id="rechercher-employe" type="search" placeholder="Rechercher un employé">
+            </div>
+
+            <div class="container-staff" id="container-staff">
+
+            </div>
+
+        </div>
+
+        <button class="ajouter-employe" id="ajouter-employe-btn">Ajout d'un employé</button>
+
+    </section>
+
+    <section class="zones" id="zones">
+        <div class="container-zones" id="container-zones">
+
+            <svg width="100%" height="100%" id="container-svg">
+
+            </svg>
+
+            <div class="modale-zone-employe" id="modale-zone-employe">
+                <button class="remove-modale-zone-employe-btn">
+                    <i class="fa-solid fa-x"></i>
+                </button>
+
+                <div id="container-zone-employe">
+
+                </div>
+            </div>
+
+            <button class="ajouter-employe-btn">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+
+        </div>
+
+    </section>
+
+    <section class="section-ajouter-employe" id="section-ajouter-employe">
+        <div class="container">
+            <div class="erorr">
+                <div class="erorr-content">
+                    <img src="images/close.png" alt="">
+                    <p>Un champ n'est pas valide.</p>
+                </div>
+            </div>
+
+            <div class="valid">
+                <div class="valid-content">
+                    <img src="images/check.png" alt="">
+                    <p>Enregistrement réussi.</p>
+                </div>
+            </div>
+
+            <button class="remove-modale-add-employe-btn" id="remove-modale-add-employe-btn">
+                <i class="fa-solid fa-x"></i>
+            </button>
+
+            <div class="header-info">
+                <div class="icon-user">
+                    <div class="circle-grand">
+                        <div class="circle-petit">
+                            <img src="images/user.svg" alt="" width="30px" height="30px">
+                        </div>
+                    </div>
+                </div>
+                <h3>Ajout d'un employé</h3>
+                <p>Veuillez compléter le formulaire ci-dessous pour ajouter un nouvel employé.</p>
+
+            </div>
+
+
+
+            <form action="" id="form-info-employe">
+                <div class="section-info">
+                    <h2>Informations de base</h2>
+
+                    <div class="box-input">
+                        <div class="content-box">
+                            <label for="nom-complet">Nom complet :</label>
+                            <input type="text" id="nom-complet" name="nom-complet">
+                            <span class="nom-complet"></span>
+                        </div>
+
+                        <div class="content-box">
+                            <label for="role">Role :</label>
+                            <select name="role" id="role">
+                                <option value="" disabled selected>Sélectionnez un rôle</option>
+                                <option value="receptionniste">Réceptionniste</option>
+                                <option value="technicien">Technicien IT</option>
+                                <option value="agentSecurite">Agent de sécurité</option>
+                                <option value="manager">Manager</option>
+                                <option value="nettoyage">Nettoyage</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                            <span class="role"></span>
+                            <!-- <img src="images/user.svg" alt=""> -->
+                        </div>
+
+                        <div class="content-box">
+                            <label for="email">Email :</label>
+                            <input type="email" id="email" name="email">
+                            <span class="email"></span>
+                        </div>
+
+                        <div class="content-box">
+                            <label for="telephone">Téléphone :</label>
+                            <input type="text" id="telephone" name="telephone">
+                            <span class="telephone"></span>
+                        </div>
+
+                        <div class="content-box">
+                            <label for="photo-url">Photo (URL) :</label>
+                            <input type="url" id="photo-url" name="photo-url">
+                            <span class="photo-url"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="content-photo" id="content-photo">
+                        <svg width="100%" height="100%" id="svg-photo">
+
+                        </svg>
+                    </div>
+
+                    <hr>
+
+                    <h2>Expérience professionnelle</h2>
+
+                    <button class="ajouter-experience-btn" id="ajouter-experience-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        Ajouter une Expérience
+                    </button>
+                    <div class="experieces" id="experieces">
+
+                    </div>
+
+                </div>
+
+                <div class="footer-btn">
+                    <button class="remove-modale-ajouter-employe-btn">Annuler</button>
+                    <button type="submit" class="sauvegarder-employe-btn"
+                        id="sauvegarder-employe-btn">Sauvegarder</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- <img src="images/user.svg" alt=""> -->
+
+    </section>
+
+    <div id="div-blur">
+
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
